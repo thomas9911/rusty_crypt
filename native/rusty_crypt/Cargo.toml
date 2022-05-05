@@ -1,0 +1,15 @@
+[package]
+name = "rusty_crypt"
+version = "0.1.0"
+authors = []
+edition = "2018"
+
+[lib]
+name = "rusty_crypt"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+aes-gcm = { version = "0.9.4", features = ["heapless"] }
+rustler = "0.25.0"
+sha2 = "0.10.2"
