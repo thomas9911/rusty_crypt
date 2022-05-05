@@ -24,7 +24,7 @@ defmodule RustyCrypt.MixProject do
   defp deps do
     [
       {:rustler, "~> 0.25.0"},
-      {:benchee, "~> 1.0", only: :bench},
+      {:benchee, "~> 1.0", only: :bench}
     ]
   end
 
