@@ -10,6 +10,6 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-aes-gcm = { version = "0.9.4", features = ["heapless"] }
+aes-gcm = { version = "0.9.4", features = ["aes", "heapless"], default-features = false }
 rustler = "0.25.0"
 sha2 = "0.10.2"

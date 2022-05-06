@@ -9,7 +9,10 @@ defmodule RustyCrypt.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
-      preferred_cli_env: [bench: :bench]
+      preferred_cli_env: [
+        "bench.sha": :bench,
+        "bench.aes": :bench
+      ]
     ]
   end
 
@@ -30,7 +33,8 @@ defmodule RustyCrypt.MixProject do
 
   defp aliases do
     [
-      bench: "run bench/sha256.exs"
+      "bench.sha": "run bench/sha256.exs",
+      "bench.aes": "run bench/aes256.exs"
     ]
   end
 end

@@ -90,6 +90,7 @@ fn aes256gcm_decrypt<'a>(
     Ok((ok(), Binary::from_owned(text, env)))
 }
 
+
 rustler::init!(
     "Elixir.RustyCrypt",
     [sha256, aes256gcm_decrypt, aes256gcm_encrypt]
