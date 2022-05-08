@@ -25,6 +25,10 @@ defmodule RustyCrypt.ErlangTest do
   end
 
   describe "hash" do
+    test "sha224" do
+      assert_same(:crypto, RustyCrypt.Erlang, :hash, [:sha224, <<0::64>>])
+    end
+
     test "sha256" do
       assert_same(:crypto, RustyCrypt.Erlang, :hash, [:sha256, <<0::64>>])
     end

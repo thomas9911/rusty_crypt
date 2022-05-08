@@ -5,16 +5,20 @@ defmodule RustyCrypt.Erlang do
   (so functions, input and output should be the same)
   """
 
+  def hash(:sha224, data) do
+    RustyCrypt.Hashing.Sha2.sha224(data)
+  end
+
   def hash(:sha256, data) do
-    RustyCrypt.sha256(data)
+    RustyCrypt.Hashing.Sha2.sha256(data)
   end
 
   def hash(:sha384, data) do
-    RustyCrypt.sha384(data)
+    RustyCrypt.Hashing.Sha2.sha384(data)
   end
 
   def hash(:sha512, data) do
-    RustyCrypt.sha512(data)
+    RustyCrypt.Hashing.Sha2.sha512(data)
   end
 
   def hash(_, _) do
@@ -23,13 +27,13 @@ defmodule RustyCrypt.Erlang do
 
   def crypto_one_time_aead(:aes_256_gcm, key, iv, text, aad, true) do
     key
-    |> RustyCrypt.aes256gcm_encrypt(iv, text, aad)
+    |> RustyCrypt.Cipher.Aes256gcm.encrypt(iv, text, aad)
     |> unwrap_or_raise()
   end
 
   def crypto_one_time_aead(:chacha20_poly1305, key, iv, text, aad, true) do
     key
-    |> RustyCrypt.chacha20_poly1305_encrypt(iv, text, aad)
+    |> RustyCrypt.Cipher.Chacha20Poly1305.encrypt(iv, text, aad)
     |> unwrap_or_raise()
   end
 
@@ -39,13 +43,13 @@ defmodule RustyCrypt.Erlang do
 
   def crypto_one_time_aead(:aes_256_gcm, key, iv, data, aad, tag, false) do
     key
-    |> RustyCrypt.aes256gcm_decrypt(iv, data, aad, tag)
+    |> RustyCrypt.Cipher.Aes256gcm.decrypt(iv, data, aad, tag)
     |> unwrap_or_raise()
   end
 
   def crypto_one_time_aead(:chacha20_poly1305, key, iv, data, aad, tag, false) do
     key
-    |> RustyCrypt.chacha20_poly1305_decrypt(iv, data, aad, tag)
+    |> RustyCrypt.Cipher.Chacha20Poly1305.decrypt(iv, data, aad, tag)
     |> unwrap_or_raise()
   end
 

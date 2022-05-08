@@ -1,9 +1,8 @@
-use aes_gcm::aead::{AeadCore, AeadInPlace, NewAead};
-// use aes_gcm::{Aes256Gcm, Key, Nonce, Tag};
-use aes_gcm::aead::{Nonce, Tag, Key};
+use aes_gcm::aead::{AeadCore, AeadInPlace, NewAead, Nonce, Tag, Key};
 use aes_gcm::{Aes256Gcm};
 
 use chacha20poly1305::ChaCha20Poly1305;
+use ccm::Ccm;
 
 use rustler::types::atom::ok;
 use rustler::{Atom, Binary, NewBinary, OwnedBinary};
@@ -200,6 +199,6 @@ fn inner_decrypt<'a, T: AeadInPlace>(
 }
 
 rustler::init!(
-    "Elixir.RustyCrypt",
+    "Elixir.RustyCrypt.Native",
     [sha224, sha256, sha384, sha512, aes256gcm_decrypt, aes256gcm_encrypt, chacha20_poly1305_decrypt, chacha20_poly1305_encrypt]
 );
