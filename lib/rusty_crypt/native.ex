@@ -29,6 +29,19 @@ defmodule RustyCrypt.Native do
         ) :: {:ok, data :: binary} | {:error, atom}
   def aes256gcm_decrypt(_key, _text, _iv, _aad, _tag), do: :erlang.nif_error(:nif_not_loaded)
 
+  @spec aes256gcm_encrypt(key :: binary, data :: binary, iv :: binary, aad :: binary) ::
+          {:ok, {data :: binary, tag :: binary}} | {:error, atom}
+  def aes256ccm_encrypt(_key, _data, _iv, _aad), do: :erlang.nif_error(:nif_not_loaded)
+
+  @spec aes256gcm_decrypt(
+          key :: binary,
+          data :: binary,
+          iv :: binary,
+          aad :: binary,
+          tag :: binary
+        ) :: {:ok, data :: binary} | {:error, atom}
+  def aes256ccm_decrypt(_key, _text, _iv, _aad, _tag), do: :erlang.nif_error(:nif_not_loaded)
+
   @spec chacha20_poly1305_encrypt(key :: binary, data :: binary, iv :: binary, aad :: binary) ::
           {:ok, {data :: binary, tag :: binary}} | {:error, atom}
   def chacha20_poly1305_encrypt(_key, _data, _iv, _aad), do: :erlang.nif_error(:nif_not_loaded)

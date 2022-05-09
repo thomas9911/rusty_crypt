@@ -4,6 +4,13 @@ defmodule RustyCrypt.Erlang do
   These functions should behave the same as the erlang functions
   (so functions, input and output should be the same)
   """
+  def supports(:hashs) do
+    [:sha224, :sha256, :sha384, :sha512]
+  end
+
+  def supports(:ciphers) do
+    [:aes_256_ccm, :aes_256_gcm, :chacha20_poly1305]
+  end
 
   def hash(:sha224, data) do
     RustyCrypt.Hashing.Sha2.sha224(data)
@@ -31,6 +38,12 @@ defmodule RustyCrypt.Erlang do
     |> unwrap_or_raise()
   end
 
+  def crypto_one_time_aead(:aes_256_ccm, key, iv, text, aad, true) do
+    key
+    |> RustyCrypt.Cipher.Aes256ccm.encrypt(iv, text, aad)
+    |> unwrap_or_raise()
+  end
+
   def crypto_one_time_aead(:chacha20_poly1305, key, iv, text, aad, true) do
     key
     |> RustyCrypt.Cipher.Chacha20Poly1305.encrypt(iv, text, aad)
@@ -44,6 +57,12 @@ defmodule RustyCrypt.Erlang do
   def crypto_one_time_aead(:aes_256_gcm, key, iv, data, aad, tag, false) do
     key
     |> RustyCrypt.Cipher.Aes256gcm.decrypt(iv, data, aad, tag)
+    |> unwrap_or_raise()
+  end
+
+  def crypto_one_time_aead(:aes_256_ccm, key, iv, data, aad, tag, false) do
+    key
+    |> RustyCrypt.Cipher.Aes256ccm.decrypt(iv, data, aad, tag)
     |> unwrap_or_raise()
   end
 

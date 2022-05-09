@@ -70,6 +70,29 @@ defmodule RustyCrypt.ErlangTest do
       ])
     end
 
+    test "aes_256_ccm true" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_256_ccm,
+        <<0::256>>,
+        <<1::96>>,
+        "Just some text",
+        <<>>,
+        true
+      ])
+    end
+
+    test "aes_256_ccm false" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_256_ccm,
+        <<0::256>>,
+        <<1::96>>,
+        <<99, 180, 87, 86, 212, 5, 8, 177, 204, 32, 41, 196, 233, 139>>,
+        <<>>,
+        <<236, 199, 6, 173, 88, 152, 242, 120, 175, 135, 64, 71, 169, 142, 109, 77>>,
+        false
+      ])
+    end
+
     test "chacha20_poly1305 true" do
       assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
         :chacha20_poly1305,

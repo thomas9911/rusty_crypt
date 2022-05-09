@@ -1,8 +1,10 @@
-use aes_gcm::aead::{AeadCore, AeadInPlace, NewAead, Nonce, Tag, Key};
-use aes_gcm::{Aes256Gcm};
+use aes_gcm::aead::{AeadCore, AeadInPlace, Key, NewAead, Nonce, Tag};
+use aes_gcm::aes::Aes256;
+use aes_gcm::Aes256Gcm;
 
-use chacha20poly1305::ChaCha20Poly1305;
+use ccm::consts::U12;
 use ccm::Ccm;
+use chacha20poly1305::ChaCha20Poly1305;
 
 use rustler::types::atom::ok;
 use rustler::{Atom, Binary, NewBinary, OwnedBinary};
@@ -10,6 +12,8 @@ use rustler::{Env, Error, NifResult};
 use sha2::{Digest, Sha224, Sha256, Sha384, Sha512};
 use std::io::Write;
 use typenum::ToInt;
+
+type Aes256Ccm = Ccm<Aes256, U12, U12>;
 
 #[derive(rustler::NifUnitEnum)]
 enum Aes256Error {
@@ -29,7 +33,6 @@ fn sha224<'a>(env: Env<'a>, data: Binary) -> Binary<'a> {
         .unwrap();
     binary.into()
 }
-
 
 #[rustler::nif]
 fn sha256<'a>(env: Env<'a>, data: Binary) -> Binary<'a> {
@@ -84,6 +87,28 @@ fn aes256gcm_encrypt<'a>(
 }
 
 #[rustler::nif]
+fn aes256ccm_encrypt<'a>(
+    env: Env<'a>,
+    key: Binary,
+    iv: Binary,
+    text: Binary,
+    aad: Binary,
+) -> NifResult<(Atom, (Binary<'a>, Binary<'a>))> {
+    if iv.len() != <Aes256Ccm as AeadCore>::NonceSize::to_int() {
+        // 96-bits; unique per message
+        return Err(Error::Term(Box::new(Aes256Error::BadIVLength)));
+    }
+
+    if key.len() != <Aes256Ccm as NewAead>::KeySize::to_int() {
+        return Err(Error::Term(Box::new(Aes256Error::BadKeyLength)));
+    }
+
+    let key = Key::<Aes256Ccm>::from_slice(key.as_slice());
+    let cipher = Aes256Ccm::new(key);
+    inner_encrypt(env, cipher, iv, text, aad)
+}
+
+#[rustler::nif]
 fn chacha20_poly1305_encrypt<'a>(
     env: Env<'a>,
     key: Binary,
@@ -126,6 +151,31 @@ fn aes256gcm_decrypt<'a>(
 
     let key = Key::<Aes256Gcm>::from_slice(key.as_slice());
     let cipher = Aes256Gcm::new(key);
+    inner_decrypt(env, cipher, iv, text, aad, tag)
+}
+
+#[rustler::nif]
+fn aes256ccm_decrypt<'a>(
+    env: Env<'a>,
+    key: Binary,
+    iv: Binary,
+    text: Binary,
+    aad: Binary,
+    tag: Binary,
+) -> NifResult<(Atom, Binary<'a>)> {
+    if iv.len() != <Aes256Ccm as AeadCore>::NonceSize::to_int() {
+        // 96-bits; unique per message
+        return Err(Error::Term(Box::new(Aes256Error::BadIVLength)));
+    }
+    if key.len() != <Aes256Ccm as NewAead>::KeySize::to_int() {
+        return Err(Error::Term(Box::new(Aes256Error::BadKeyLength)));
+    }
+    if tag.len() != <Aes256Ccm as AeadCore>::TagSize::to_int() {
+        return Err(Error::Term(Box::new(Aes256Error::BadTagLength)));
+    }
+
+    let key = Key::<Aes256Ccm>::from_slice(key.as_slice());
+    let cipher = Aes256Ccm::new(key);
     inner_decrypt(env, cipher, iv, text, aad, tag)
 }
 
@@ -200,5 +250,16 @@ fn inner_decrypt<'a, T: AeadInPlace>(
 
 rustler::init!(
     "Elixir.RustyCrypt.Native",
-    [sha224, sha256, sha384, sha512, aes256gcm_decrypt, aes256gcm_encrypt, chacha20_poly1305_decrypt, chacha20_poly1305_encrypt]
+    [
+        sha224,
+        sha256,
+        sha384,
+        sha512,
+        aes256gcm_decrypt,
+        aes256gcm_encrypt,
+        aes256ccm_decrypt,
+        aes256ccm_encrypt,
+        chacha20_poly1305_decrypt,
+        chacha20_poly1305_encrypt
+    ]
 );
