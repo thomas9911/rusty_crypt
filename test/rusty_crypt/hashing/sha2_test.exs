@@ -1,6 +1,6 @@
 defmodule RustyCrypt.Hashing.Sha2Test do
   use ExUnit.Case
-  doctest RustyCrypt.Hashing
+  doctest RustyCrypt.Hashing.Sha2
 
   alias RustyCrypt.Hashing.Sha2
 

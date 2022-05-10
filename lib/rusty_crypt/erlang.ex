@@ -5,7 +5,7 @@ defmodule RustyCrypt.Erlang do
   (so functions, input and output should be the same)
   """
   def supports(:hashs) do
-    [:sha224, :sha256, :sha384, :sha512]
+    [:sha224, :sha256, :sha384, :sha512, :sha3_224, :sha3_256, :sha3_384, :sha3_512]
   end
 
   def supports(:ciphers) do
@@ -26,6 +26,22 @@ defmodule RustyCrypt.Erlang do
 
   def hash(:sha512, data) do
     RustyCrypt.Hashing.Sha2.sha512(data)
+  end
+
+  def hash(:sha3_224, data) do
+    RustyCrypt.Hashing.Sha3.sha224(data)
+  end
+
+  def hash(:sha3_256, data) do
+    RustyCrypt.Hashing.Sha3.sha256(data)
+  end
+
+  def hash(:sha3_384, data) do
+    RustyCrypt.Hashing.Sha3.sha384(data)
+  end
+
+  def hash(:sha3_512, data) do
+    RustyCrypt.Hashing.Sha3.sha512(data)
   end
 
   def hash(_, _) do

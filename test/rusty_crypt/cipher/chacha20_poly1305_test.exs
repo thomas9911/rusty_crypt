@@ -1,6 +1,6 @@
 defmodule RustyCrypt.Cipher.Chacha20Poly1305Test do
   use ExUnit.Case
-  doctest RustyCrypt.Hashing
+  doctest RustyCrypt.Cipher.Chacha20Poly1305
 
   alias RustyCrypt.Cipher.Chacha20Poly1305
 

@@ -16,6 +16,18 @@ defmodule RustyCrypt.Native do
   @spec sha512(binary) :: binary
   def sha512(_data), do: :erlang.nif_error(:nif_not_loaded)
 
+  @spec sha3_224(binary) :: binary
+  def sha3_224(_data), do: :erlang.nif_error(:nif_not_loaded)
+
+  @spec sha3_256(binary) :: binary
+  def sha3_256(_data), do: :erlang.nif_error(:nif_not_loaded)
+
+  @spec sha3_384(binary) :: binary
+  def sha3_384(_data), do: :erlang.nif_error(:nif_not_loaded)
+
+  @spec sha3_512(binary) :: binary
+  def sha3_512(_data), do: :erlang.nif_error(:nif_not_loaded)
+
   @spec aes256gcm_encrypt(key :: binary, data :: binary, iv :: binary, aad :: binary) ::
           {:ok, {data :: binary, tag :: binary}} | {:error, atom}
   def aes256gcm_encrypt(_key, _data, _iv, _aad), do: :erlang.nif_error(:nif_not_loaded)
@@ -29,11 +41,11 @@ defmodule RustyCrypt.Native do
         ) :: {:ok, data :: binary} | {:error, atom}
   def aes256gcm_decrypt(_key, _text, _iv, _aad, _tag), do: :erlang.nif_error(:nif_not_loaded)
 
-  @spec aes256gcm_encrypt(key :: binary, data :: binary, iv :: binary, aad :: binary) ::
+  @spec aes256ccm_encrypt(key :: binary, data :: binary, iv :: binary, aad :: binary) ::
           {:ok, {data :: binary, tag :: binary}} | {:error, atom}
   def aes256ccm_encrypt(_key, _data, _iv, _aad), do: :erlang.nif_error(:nif_not_loaded)
 
-  @spec aes256gcm_decrypt(
+  @spec aes256ccm_decrypt(
           key :: binary,
           data :: binary,
           iv :: binary,

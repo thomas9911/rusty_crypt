@@ -1,6 +1,6 @@
 defmodule RustyCrypt.Cipher.Aes256gcmTest do
   use ExUnit.Case
-  doctest RustyCrypt.Hashing
+  doctest RustyCrypt.Cipher.Aes256gcm
 
   alias RustyCrypt.Cipher.Aes256gcm
 

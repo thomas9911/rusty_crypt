@@ -41,6 +41,22 @@ defmodule RustyCrypt.ErlangTest do
       assert_same(:crypto, RustyCrypt.Erlang, :hash, [:sha512, <<0::64>>])
     end
 
+    test "sha3_224" do
+      assert_same(:crypto, RustyCrypt.Erlang, :hash, [:sha3_224, <<0::64>>])
+    end
+
+    test "sha3_256" do
+      assert_same(:crypto, RustyCrypt.Erlang, :hash, [:sha3_256, <<0::64>>])
+    end
+
+    test "sha3_384" do
+      assert_same(:crypto, RustyCrypt.Erlang, :hash, [:sha3_384, <<0::64>>])
+    end
+
+    test "sha3_512" do
+      assert_same(:crypto, RustyCrypt.Erlang, :hash, [:sha3_512, <<0::64>>])
+    end
+
     test "invalid method" do
       assert_same_exception(:crypto, RustyCrypt.Erlang, :hash, [:testing, <<0::64>>])
     end
