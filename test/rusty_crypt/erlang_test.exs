@@ -1,5 +1,5 @@
 defmodule RustyCrypt.ErlangTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   def assert_same_exception(module_one, module_two, method, args) do
     exception =
@@ -60,6 +60,29 @@ defmodule RustyCrypt.ErlangTest do
     test "invalid method" do
       assert_same_exception(:crypto, RustyCrypt.Erlang, :hash, [:testing, <<0::64>>])
     end
+  end
+
+  test "string_rand_bytes" do
+    Enum.map([1, 12, 50, 100, 120, 512], fn amount ->
+      erlang = :crypto.strong_rand_bytes(amount)
+      output = RustyCrypt.Erlang.strong_rand_bytes(amount)
+
+      assert byte_size(erlang) == byte_size(output)
+    end)
+  end
+
+  test "bytes_to_integer" do
+    assert_same(:crypto, RustyCrypt.Erlang, :bytes_to_integer, [
+      <<255, 255, 255>>
+    ])
+
+    assert_same(:crypto, RustyCrypt.Erlang, :bytes_to_integer, [
+      <<12, 12, 12, 23>>
+    ])
+
+    assert_same(:crypto, RustyCrypt.Erlang, :bytes_to_integer, [
+      RustyCrypt.Erlang.strong_rand_bytes(512)
+    ])
   end
 
   describe "crypto_one_time_aead" do

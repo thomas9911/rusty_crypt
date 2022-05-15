@@ -11,7 +11,8 @@ defmodule RustyCrypt.MixProject do
       aliases: aliases(),
       preferred_cli_env: [
         "bench.sha": :bench,
-        "bench.aes": :bench
+        "bench.aes": :bench,
+        "bench.random": :bench
       ]
     ]
   end
@@ -35,7 +36,8 @@ defmodule RustyCrypt.MixProject do
   defp aliases do
     [
       "bench.sha": "run bench/sha256.exs",
-      "bench.aes": "run bench/aes256.exs"
+      "bench.aes": "run bench/aes256.exs",
+      "bench.random": "run bench/random.exs"
     ]
   end
 end

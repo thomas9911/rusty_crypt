@@ -92,6 +92,10 @@ defmodule RustyCrypt.Erlang do
     raise ArgumentError, message: "argument error: 'Not an AEAD cipher'"
   end
 
+  defdelegate strong_rand_bytes(amount), to: RustyCrypt.Random.Bytes, as: :secure_random
+
+  defdelegate bytes_to_integer(binary), to: RustyCrypt.Native
+
   defp unwrap_or_raise({:ok, out}), do: out
 
   defp unwrap_or_raise({:error, :bad_iv_length}) do

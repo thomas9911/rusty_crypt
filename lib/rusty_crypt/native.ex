@@ -67,4 +67,12 @@ defmodule RustyCrypt.Native do
         ) :: {:ok, data :: binary} | {:error, atom}
   def chacha20_poly1305_decrypt(_key, _text, _iv, _aad, _tag),
     do: :erlang.nif_error(:nif_not_loaded)
+
+  @spec secure_random_bytes(pos_integer) :: binary
+  def secure_random_bytes(_byte_size), do: :erlang.nif_error(:nif_not_loaded)
+  @spec fast_random_bytes(pos_integer) :: binary
+  def fast_random_bytes(_byte_size), do: :erlang.nif_error(:nif_not_loaded)
+
+  @spec bytes_to_integer(binary) :: integer
+  def bytes_to_integer(_bytes), do: :erlang.nif_error(:nif_not_loaded)
 end
