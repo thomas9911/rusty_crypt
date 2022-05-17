@@ -1,5 +1,5 @@
 use rustler::types::atom::error;
-use rustler::{Binary, Env, Error, NifResult, Term};
+use rustler::{Binary, Env, Error, NewBinary, NifResult, Term};
 
 use num_bigint::Sign;
 
@@ -113,4 +113,26 @@ impl rustler::Encoder for BigInt {
 #[rustler::nif]
 fn bytes_to_integer<'a>(binary: Binary) -> NifResult<BigInt> {
     Ok(num_bigint::BigInt::from_bytes_be(Sign::Plus, binary.as_slice()).into())
+}
+
+#[rustler::nif]
+fn exor<'a>(env: Env<'a>, term1: Term<'a>, term2: Term<'a>) -> NifResult<Binary<'a>> {
+    let bin1 = term1.decode_as_binary()?;
+    let bin2 = term2.decode_as_binary()?;
+
+    if bin1.len() == bin2.len() {
+        let mut bin = NewBinary::new(env, bin1.len());
+
+        let data: Vec<_> = bin1
+            .as_slice()
+            .iter()
+            .zip(bin2.as_slice().iter())
+            .map(|(x, y)| x ^ y)
+            .collect();
+        bin.as_mut_slice().copy_from_slice(&data);
+
+        Ok(bin.into())
+    } else {
+        Err(Error::BadArg)
+    }
 }

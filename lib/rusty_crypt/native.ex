@@ -75,4 +75,7 @@ defmodule RustyCrypt.Native do
 
   @spec bytes_to_integer(binary) :: integer
   def bytes_to_integer(_bytes), do: :erlang.nif_error(:nif_not_loaded)
+
+  @spec exor(binary, binary) :: binary
+  def exor(_bin1, _bin2), do: :erlang.nif_error(:nif_not_loaded)
 end

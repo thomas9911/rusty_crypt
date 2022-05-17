@@ -85,6 +85,50 @@ defmodule RustyCrypt.ErlangTest do
     ])
   end
 
+  describe "exor" do
+    test "same length binary" do
+      assert_same(:crypto, RustyCrypt.Erlang, :exor, [
+        <<255, 250, 195>>,
+        <<4, 3, 1>>
+      ])
+    end
+
+    test "diffent length binary" do
+      assert_same_exception(:crypto, RustyCrypt.Erlang, :exor, [
+        <<255, 250, 195>>,
+        <<4, 3>>
+      ])
+    end
+
+    test "same length list" do
+      assert_same(:crypto, RustyCrypt.Erlang, :exor, [
+        [255, 250, 195],
+        [4, 3, 1]
+      ])
+    end
+
+    test "diffent length list" do
+      assert_same_exception(:crypto, RustyCrypt.Erlang, :exor, [
+        [255, 250, 195],
+        [4, 3]
+      ])
+    end
+
+    test "same length mixed" do
+      assert_same(:crypto, RustyCrypt.Erlang, :exor, [
+        <<255, 250, 195>>,
+        [4, 3, 1]
+      ])
+    end
+
+    test "same length iolist" do
+      assert_same(:crypto, RustyCrypt.Erlang, :exor, [
+        [255, 250, [195]],
+        [4, [3], 1]
+      ])
+    end
+  end
+
   describe "crypto_one_time_aead" do
     test "aes_256_gcm true" do
       assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [

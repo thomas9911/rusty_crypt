@@ -96,6 +96,8 @@ defmodule RustyCrypt.Erlang do
 
   defdelegate bytes_to_integer(binary), to: RustyCrypt.Native
 
+  defdelegate exor(bin1, bin2), to: RustyCrypt.Native
+
   defp unwrap_or_raise({:ok, out}), do: out
 
   defp unwrap_or_raise({:error, :bad_iv_length}) do

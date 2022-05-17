@@ -22,6 +22,7 @@ rustler::init!(
         aead::chacha20_poly1305_encrypt,
         random::secure_random_bytes,
         random::fast_random_bytes,
-        general::bytes_to_integer
+        general::bytes_to_integer,
+        general::exor,
     ]
 );
