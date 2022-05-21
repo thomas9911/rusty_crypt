@@ -2,79 +2,35 @@ defmodule RustyCryptTest do
   use ExUnit.Case
   doctest RustyCrypt
 
-  # describe "chacha20_poly1305_encrypt" do
-  #   test "works" do
-  #     iv = <<1::96>>
-  #     key = <<0::256>>
-  #     text = "Just some text"
-  #     aad = <<>>
+  describe "xor" do
+    test "cancels" do
+      assert <<0::48>> == RustyCrypt.xor(<<0, 1, 2, 3, 4, 5>>, <<0, 1, 2, 3, 4, 5>>)
+    end
 
-  #     {expected_out, expected_tag} =
-  #       {<<98, 64, 52, 151, 243, 160, 97, 141, 82, 60, 106, 5, 93, 139>>,
-  #        <<144, 70, 37, 214, 161, 8, 154, 151, 101, 195, 135, 97, 60, 226, 172, 76>>}
+    test "works" do
+      assert <<5, 5, 1, 1, 5, 5>> == RustyCrypt.xor(<<0, 1, 2, 3, 4, 5>>, <<5, 4, 3, 2, 1, 0>>)
+    end
 
-  #     {:ok, {out, tag}} = RustyCrypt.chacha20_poly1305_encrypt(key, iv, text, aad)
+    test "raises on different lengths" do
+      assert_raise ArgumentError, "argument error", fn ->
+        RustyCrypt.xor(<<0, 1, 2, 3, 4, 5>>, <<5, 3>>)
+      end
+    end
+  end
 
-  #     {out_erlang, tag_erlang} =
-  #       :crypto.crypto_one_time_aead(:chacha20_poly1305, key, iv, text, aad, true)
+  describe "bytes to integer" do
+    test "zeroes" do
+      assert 0 == RustyCrypt.bytes_to_integer(<<0::128>>)
+    end
 
-  #     assert expected_out == out
-  #     assert expected_tag == tag
-  #     assert expected_out == out_erlang
-  #     assert expected_tag == tag_erlang
-  #   end
+    test "ones" do
+      assert 340_282_366_920_938_463_463_374_607_431_768_211_455 ==
+               RustyCrypt.bytes_to_integer(<<-1::128>>)
+    end
 
-  #   test "invalid iv" do
-  #     assert {:error, :bad_iv_length} ==
-  #              RustyCrypt.chacha20_poly1305_encrypt(<<0::256>>, <<>>, "", "")
-  #   end
-
-  #   test "invalid key" do
-  #     assert {:error, :bad_key_length} ==
-  #              RustyCrypt.chacha20_poly1305_encrypt(<<>>, <<0::96>>, "", "")
-  #   end
-
-  #   test "empty data" do
-  #     assert {:ok,
-  #             {"", <<78, 185, 114, 201, 168, 251, 58, 27, 56, 43, 180, 211, 111, 95, 250, 209>>}} ==
-  #              RustyCrypt.chacha20_poly1305_encrypt(<<0::256>>, <<0::96>>, "", "")
-  #   end
-  # end
-
-  # describe "chacha20_poly1305_decrypt" do
-  #   test "works" do
-  #     iv = <<1::96>>
-  #     key = <<0::256>>
-  #     data = <<98, 64, 52, 151, 243, 160, 97, 141, 82, 60, 106, 5, 93, 139>>
-  #     aad = <<>>
-  #     tag = <<144, 70, 37, 214, 161, 8, 154, 151, 101, 195, 135, 97, 60, 226, 172, 76>>
-
-  #     expected = "Just some text"
-
-  #     assert {:ok, expected} == RustyCrypt.chacha20_poly1305_decrypt(key, iv, data, aad, tag)
-
-  #     assert expected ==
-  #              :crypto.crypto_one_time_aead(:chacha20_poly1305, key, iv, data, aad, tag, false)
-  #   end
-
-  #   test "invalid iv" do
-  #     assert {:error, :bad_iv_length} ==
-  #              RustyCrypt.chacha20_poly1305_decrypt(<<0::256>>, <<>>, "", "", <<0::128>>)
-  #   end
-
-  #   test "invalid key" do
-  #     assert {:error, :bad_key_length} ==
-  #              RustyCrypt.chacha20_poly1305_decrypt(<<>>, <<0::96>>, "", "", <<0::128>>)
-  #   end
-
-  #   test "invalid tag" do
-  #     assert {:error, :bad_tag_length} ==
-  #              RustyCrypt.chacha20_poly1305_decrypt(<<0::256>>, <<0::96>>, "", "", "")
-  #   end
-
-  #   test "invalid data" do
-  #     assert {:error, :decrypt_failed} ==
-  #              RustyCrypt.chacha20_poly1305_decrypt(<<0::256>>, <<0::96>>, "", "", <<0::128>>)
-  #   end
-  # end
+    test "text" do
+      assert 2_159_240_844_166_015_654_621_946_877_147_252 ==
+               RustyCrypt.bytes_to_integer("just some text")
+    end
+  end
 end

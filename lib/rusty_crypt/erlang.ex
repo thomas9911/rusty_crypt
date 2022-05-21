@@ -64,12 +64,36 @@ defmodule RustyCrypt.Erlang do
     RustyCrypt.Mac.Hmac.sha2_512(key, data)
   end
 
+  def mac(:hmac, :sha3_224, key, data) do
+    RustyCrypt.Mac.Hmac.sha3_224(key, data)
+  end
+
+  def mac(:hmac, :sha3_256, key, data) do
+    RustyCrypt.Mac.Hmac.sha3_256(key, data)
+  end
+
+  def mac(:hmac, :sha3_384, key, data) do
+    RustyCrypt.Mac.Hmac.sha3_384(key, data)
+  end
+
+  def mac(:hmac, :sha3_512, key, data) do
+    RustyCrypt.Mac.Hmac.sha3_512(key, data)
+  end
+
   def mac(:hmac, _, _, _) do
     :erlang.error({:badarg, {'mac.c', 259}, 'Bad digest algorithm for HMAC'})
   end
 
   def mac(_, _, _, _) do
     :erlang.error({:badarg, {'mac.c', 229}, 'Unknown mac algorithm'})
+  end
+
+  @doc deprecated: """
+       Use `RustyCrypt.Erlang.mac/4` instead. This function was removed in OTP 24
+       (ofcourse we are not linked to OTP because we use Rust implementations)
+       """
+  def hmac(method, key, data) do
+    mac(:hmac, method, key, data)
   end
 
   def crypto_one_time_aead(:aes_256_gcm, key, iv, text, aad, true) do
@@ -118,9 +142,9 @@ defmodule RustyCrypt.Erlang do
 
   defdelegate strong_rand_bytes(amount), to: RustyCrypt.Random.Bytes, as: :secure_random
 
-  defdelegate bytes_to_integer(binary), to: RustyCrypt.Native
+  defdelegate bytes_to_integer(binary), to: RustyCrypt
 
-  defdelegate exor(bin1, bin2), to: RustyCrypt.Native
+  defdelegate exor(bin1, bin2), to: RustyCrypt, as: :xor
 
   defp unwrap_or_raise({:ok, out}), do: out
 

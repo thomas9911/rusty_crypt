@@ -4,7 +4,6 @@ use rustler::{Env, Error, NifResult};
 use hmac::{Hmac, Mac};
 use sha2::digest;
 
-
 macro_rules! make_hmac {
     ($func_name:ident, $hasher:ty) => {
         #[rustler::nif]
@@ -42,3 +41,7 @@ make_hmac!(hmac_sha2_224, sha2::Sha224);
 make_hmac!(hmac_sha2_256, sha2::Sha256);
 make_hmac!(hmac_sha2_384, sha2::Sha384);
 make_hmac!(hmac_sha2_512, sha2::Sha512);
+make_hmac!(hmac_sha3_224, sha3::Sha3_224);
+make_hmac!(hmac_sha3_256, sha3::Sha3_256);
+make_hmac!(hmac_sha3_384, sha3::Sha3_384);
+make_hmac!(hmac_sha3_512, sha3::Sha3_512);

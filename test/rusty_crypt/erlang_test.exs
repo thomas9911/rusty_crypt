@@ -89,6 +89,22 @@ defmodule RustyCrypt.ErlangTest do
       assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha512, key, data])
     end
 
+    test "hmac sha3_224", %{key: key, data: data} do
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha3_224, key, data])
+    end
+
+    test "hmac sha3_256", %{key: key, data: data} do
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha3_256, key, data])
+    end
+
+    test "hmac sha3_384", %{key: key, data: data} do
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha3_384, key, data])
+    end
+
+    test "hmac sha3_512", %{key: key, data: data} do
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha3_512, key, data])
+    end
+
     test "hmac invalid method", %{key: key, data: data} do
       assert_same_exception(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :testing, key, data])
     end

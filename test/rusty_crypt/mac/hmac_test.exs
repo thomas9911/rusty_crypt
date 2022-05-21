@@ -49,4 +49,43 @@ defmodule RustyCrypt.Mac.HmacTest do
     assert expected == Hmac.sha2_512(@secret, @data)
     assert expected == :crypto.mac(:hmac, :sha512, @secret, @data)
   end
+
+  test "sha3_224" do
+    expected =
+      <<152, 13, 52, 123, 169, 219, 194, 184, 155, 19, 195, 97, 237, 66, 127, 141, 34, 220, 160,
+        223, 231, 117, 214, 22, 200, 59, 235, 121>>
+
+    assert expected == Hmac.sha3_224(@secret, @data)
+    assert expected == :crypto.mac(:hmac, :sha3_224, @secret, @data)
+  end
+
+  test "sha3_256" do
+    expected =
+      <<67, 148, 155, 109, 139, 1, 173, 154, 174, 198, 39, 142, 48, 72, 224, 94, 171, 2, 52, 251,
+        174, 182, 98, 231, 116, 218, 113, 253, 28, 104, 181, 103>>
+
+    assert expected == Hmac.sha3_256(@secret, @data)
+    assert expected == :crypto.mac(:hmac, :sha3_256, @secret, @data)
+  end
+
+  test "sha3_384" do
+    expected =
+      <<176, 21, 135, 16, 16, 214, 249, 248, 131, 236, 34, 109, 227, 110, 40, 208, 67, 87, 190,
+        29, 162, 82, 210, 105, 147, 115, 141, 239, 132, 245, 57, 96, 129, 56, 123, 30, 252, 174,
+        144, 159, 142, 239, 126, 12, 67, 142, 79, 229>>
+
+    assert expected == Hmac.sha3_384(@secret, @data)
+    assert expected == :crypto.mac(:hmac, :sha3_384, @secret, @data)
+  end
+
+  test "sha3_512" do
+    expected =
+      <<68, 193, 128, 0, 118, 253, 99, 244, 84, 141, 140, 139, 174, 241, 71, 73, 62, 138, 58, 232,
+        15, 84, 0, 125, 130, 24, 125, 94, 237, 248, 127, 136, 44, 188, 57, 14, 16, 195, 88, 134,
+        152, 162, 191, 54, 213, 225, 43, 14, 60, 143, 209, 124, 86, 170, 70, 45, 95, 50, 185, 145,
+        192, 124, 183, 72>>
+
+    assert expected == Hmac.sha3_512(@secret, @data)
+    assert expected == :crypto.mac(:hmac, :sha3_512, @secret, @data)
+  end
 end

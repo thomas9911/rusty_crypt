@@ -87,6 +87,14 @@ defmodule RustyCrypt.Native do
   def hmac_sha2_384(_key, _data), do: nif_error()
   @spec hmac_sha2_512(binary, binary) :: binary
   def hmac_sha2_512(_key, _data), do: nif_error()
+  @spec hmac_sha3_224(binary, binary) :: binary
+  def hmac_sha3_224(_key, _data), do: nif_error()
+  @spec hmac_sha3_256(binary, binary) :: binary
+  def hmac_sha3_256(_key, _data), do: nif_error()
+  @spec hmac_sha3_384(binary, binary) :: binary
+  def hmac_sha3_384(_key, _data), do: nif_error()
+  @spec hmac_sha3_512(binary, binary) :: binary
+  def hmac_sha3_512(_key, _data), do: nif_error()
 
   defp nif_error, do: :erlang.nif_error(:nif_not_loaded)
 end

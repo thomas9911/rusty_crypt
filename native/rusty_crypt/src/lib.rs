@@ -29,5 +29,9 @@ rustler::init!(
         mac::hmac_sha2_256,
         mac::hmac_sha2_384,
         mac::hmac_sha2_512,
+        mac::hmac_sha3_224,
+        mac::hmac_sha3_256,
+        mac::hmac_sha3_384,
+        mac::hmac_sha3_512,
     ]
 );
