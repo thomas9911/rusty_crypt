@@ -1,6 +1,7 @@
 pub mod aead;
 pub mod general;
 pub mod hash;
+pub mod mac;
 pub mod random;
 
 rustler::init!(
@@ -24,5 +25,9 @@ rustler::init!(
         random::fast_random_bytes,
         general::bytes_to_integer,
         general::exor,
+        mac::hmac_sha2_224,
+        mac::hmac_sha2_256,
+        mac::hmac_sha2_384,
+        mac::hmac_sha2_512,
     ]
 );

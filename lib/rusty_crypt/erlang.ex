@@ -48,6 +48,30 @@ defmodule RustyCrypt.Erlang do
     raise ArgumentError
   end
 
+  def mac(:hmac, :sha224, key, data) do
+    RustyCrypt.Mac.Hmac.sha2_224(key, data)
+  end
+
+  def mac(:hmac, :sha256, key, data) do
+    RustyCrypt.Mac.Hmac.sha2_256(key, data)
+  end
+
+  def mac(:hmac, :sha384, key, data) do
+    RustyCrypt.Mac.Hmac.sha2_384(key, data)
+  end
+
+  def mac(:hmac, :sha512, key, data) do
+    RustyCrypt.Mac.Hmac.sha2_512(key, data)
+  end
+
+  def mac(:hmac, _, _, _) do
+    :erlang.error({:badarg, {'mac.c', 259}, 'Bad digest algorithm for HMAC'})
+  end
+
+  def mac(_, _, _, _) do
+    :erlang.error({:badarg, {'mac.c', 229}, 'Unknown mac algorithm'})
+  end
+
   def crypto_one_time_aead(:aes_256_gcm, key, iv, text, aad, true) do
     key
     |> RustyCrypt.Cipher.Aes256gcm.encrypt(iv, text, aad)

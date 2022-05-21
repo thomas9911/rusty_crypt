@@ -62,6 +62,42 @@ defmodule RustyCrypt.ErlangTest do
     end
   end
 
+  describe "mac" do
+    alias RustyCrypt.Random.Bytes
+
+    setup do
+      {:ok,
+       %{
+         key: Bytes.secure_random(24),
+         data: Bytes.secure_random(4096)
+       }}
+    end
+
+    test "hmac sha224", %{key: key, data: data} do
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha224, key, data])
+    end
+
+    test "hmac sha256", %{key: key, data: data} do
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha256, key, data])
+    end
+
+    test "hmac sha384", %{key: key, data: data} do
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha384, key, data])
+    end
+
+    test "hmac sha512", %{key: key, data: data} do
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha512, key, data])
+    end
+
+    test "hmac invalid method", %{key: key, data: data} do
+      assert_same_exception(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :testing, key, data])
+    end
+
+    test "invalid method", %{key: key, data: data} do
+      assert_same_exception(:crypto, RustyCrypt.Erlang, :mac, [:testing, :testing, key, data])
+    end
+  end
+
   test "string_rand_bytes" do
     Enum.map([1, 12, 50, 100, 120, 512], fn amount ->
       erlang = :crypto.strong_rand_bytes(amount)

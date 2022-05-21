@@ -1,5 +1,5 @@
 use rustler::types::atom::error;
-use rustler::{Binary, Env, Error, NewBinary, NifResult, Term};
+use rustler::{Binary, Env, Error, NifResult, Term};
 
 use num_bigint::Sign;
 
@@ -121,18 +121,21 @@ fn exor<'a>(env: Env<'a>, term1: Term<'a>, term2: Term<'a>) -> NifResult<Binary<
     let bin2 = term2.decode_as_binary()?;
 
     if bin1.len() == bin2.len() {
-        let mut bin = NewBinary::new(env, bin1.len());
+        let mut bin = bin1
+            .to_owned()
+            .ok_or(Error::RaiseAtom("allocation_failed"))?;
 
-        let data: Vec<_> = bin1
-            .as_slice()
-            .iter()
-            .zip(bin2.as_slice().iter())
-            .map(|(x, y)| x ^ y)
-            .collect();
-        bin.as_mut_slice().copy_from_slice(&data);
+        xor(bin.as_mut_slice(), bin2.as_slice());
 
-        Ok(bin.into())
+        Ok(bin.release(env))
     } else {
         Err(Error::BadArg)
+    }
+}
+
+#[inline(always)]
+fn xor(buf: &mut [u8], data: &[u8]) {
+    for i in 0..data.len() {
+        buf[i] ^= data[i];
     }
 }
