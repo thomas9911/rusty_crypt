@@ -1,15 +1,13 @@
+use crate::types::IoList;
 use aes_gcm::aead::{AeadCore, AeadInPlace, Key, NewAead, Nonce, Tag};
 use aes_gcm::aes::Aes256;
 use aes_gcm::Aes256Gcm;
-
 use ccm::consts::U12;
 use ccm::Ccm;
 use chacha20poly1305::ChaCha20Poly1305;
-
 use rustler::types::atom::ok;
 use rustler::{Atom, Binary, NewBinary, OwnedBinary};
 use rustler::{Env, Error, NifResult};
-
 use typenum::ToInt;
 
 type Aes256Ccm = Ccm<Aes256, U12, U12>;
@@ -26,10 +24,10 @@ enum Aes256Error {
 #[rustler::nif]
 fn aes256gcm_encrypt<'a>(
     env: Env<'a>,
-    key: Binary,
-    iv: Binary,
-    text: Binary,
-    aad: Binary,
+    key: IoList,
+    iv: IoList,
+    text: IoList,
+    aad: IoList,
 ) -> NifResult<(Atom, (Binary<'a>, Binary<'a>))> {
     if iv.len() != <Aes256Gcm as AeadCore>::NonceSize::to_int() {
         // 96-bits; unique per message
@@ -48,10 +46,10 @@ fn aes256gcm_encrypt<'a>(
 #[rustler::nif]
 fn aes256ccm_encrypt<'a>(
     env: Env<'a>,
-    key: Binary,
-    iv: Binary,
-    text: Binary,
-    aad: Binary,
+    key: IoList,
+    iv: IoList,
+    text: IoList,
+    aad: IoList,
 ) -> NifResult<(Atom, (Binary<'a>, Binary<'a>))> {
     if iv.len() != <Aes256Ccm as AeadCore>::NonceSize::to_int() {
         // 96-bits; unique per message
@@ -70,10 +68,10 @@ fn aes256ccm_encrypt<'a>(
 #[rustler::nif]
 fn chacha20_poly1305_encrypt<'a>(
     env: Env<'a>,
-    key: Binary,
-    iv: Binary,
-    text: Binary,
-    aad: Binary,
+    key: IoList,
+    iv: IoList,
+    text: IoList,
+    aad: IoList,
 ) -> NifResult<(Atom, (Binary<'a>, Binary<'a>))> {
     if iv.len() != <ChaCha20Poly1305 as AeadCore>::NonceSize::to_int() {
         return Err(Error::Term(Box::new(Aes256Error::BadIVLength)));
@@ -91,11 +89,11 @@ fn chacha20_poly1305_encrypt<'a>(
 #[rustler::nif]
 fn aes256gcm_decrypt<'a>(
     env: Env<'a>,
-    key: Binary,
-    iv: Binary,
-    text: Binary,
-    aad: Binary,
-    tag: Binary,
+    key: IoList,
+    iv: IoList,
+    text: IoList,
+    aad: IoList,
+    tag: IoList,
 ) -> NifResult<(Atom, Binary<'a>)> {
     if iv.len() != <Aes256Gcm as AeadCore>::NonceSize::to_int() {
         // 96-bits; unique per message
@@ -116,11 +114,11 @@ fn aes256gcm_decrypt<'a>(
 #[rustler::nif]
 fn aes256ccm_decrypt<'a>(
     env: Env<'a>,
-    key: Binary,
-    iv: Binary,
-    text: Binary,
-    aad: Binary,
-    tag: Binary,
+    key: IoList,
+    iv: IoList,
+    text: IoList,
+    aad: IoList,
+    tag: IoList,
 ) -> NifResult<(Atom, Binary<'a>)> {
     if iv.len() != <Aes256Ccm as AeadCore>::NonceSize::to_int() {
         // 96-bits; unique per message
@@ -141,11 +139,11 @@ fn aes256ccm_decrypt<'a>(
 #[rustler::nif]
 fn chacha20_poly1305_decrypt<'a>(
     env: Env<'a>,
-    key: Binary,
-    iv: Binary,
-    text: Binary,
-    aad: Binary,
-    tag: Binary,
+    key: IoList,
+    iv: IoList,
+    text: IoList,
+    aad: IoList,
+    tag: IoList,
 ) -> NifResult<(Atom, Binary<'a>)> {
     if iv.len() != <ChaCha20Poly1305 as AeadCore>::NonceSize::to_int() {
         return Err(Error::Term(Box::new(Aes256Error::BadIVLength)));
@@ -165,9 +163,9 @@ fn chacha20_poly1305_decrypt<'a>(
 fn inner_encrypt<'a, T: AeadInPlace>(
     env: Env<'a>,
     cipher: T,
-    iv: Binary,
-    text: Binary,
-    aad: Binary,
+    iv: IoList,
+    text: IoList,
+    aad: IoList,
 ) -> NifResult<(Atom, (Binary<'a>, Binary<'a>))> {
     let mut text = OwnedBinary::from_unowned(&text).unwrap();
 
@@ -188,10 +186,10 @@ fn inner_encrypt<'a, T: AeadInPlace>(
 fn inner_decrypt<'a, T: AeadInPlace>(
     env: Env<'a>,
     cipher: T,
-    iv: Binary,
-    text: Binary,
-    aad: Binary,
-    tag: Binary,
+    iv: IoList,
+    text: IoList,
+    aad: IoList,
+    tag: IoList,
 ) -> NifResult<(Atom, Binary<'a>)> {
     let mut text = OwnedBinary::from_unowned(&text).unwrap();
 

@@ -1,19 +1,19 @@
+use crate::types::IoList;
+use hmac::{Hmac, Mac};
 use rustler::{Binary, NewBinary};
 use rustler::{Env, Error, NifResult};
-
-use hmac::{Hmac, Mac};
 use sha2::digest;
 
 macro_rules! make_hmac {
     ($func_name:ident, $hasher:ty) => {
         #[rustler::nif]
-        fn $func_name<'a>(env: Env<'a>, secret: Binary, data: Binary) -> NifResult<Binary<'a>> {
+        fn $func_name<'a>(env: Env<'a>, secret: IoList, data: IoList) -> NifResult<Binary<'a>> {
             inner_hmac::<Hmac<$hasher>>(env, secret, data)
         }
     };
 }
 
-fn inner_hmac<'a, T>(env: Env<'a>, secret: Binary, data: Binary) -> NifResult<Binary<'a>>
+fn inner_hmac<'a, T>(env: Env<'a>, secret: IoList, data: IoList) -> NifResult<Binary<'a>>
 where
     T: hmac::Mac
         + crypto_common::KeyInit

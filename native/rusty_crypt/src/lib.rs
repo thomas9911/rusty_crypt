@@ -3,6 +3,7 @@ pub mod general;
 pub mod hash;
 pub mod mac;
 pub mod random;
+pub mod types;
 
 rustler::init!(
     "Elixir.RustyCrypt.Native",

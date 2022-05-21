@@ -1,10 +1,9 @@
+use rand::RngCore;
 use rustler::{Binary, NewBinary};
 use rustler::{Env, Error, NifResult};
 
 #[rustler::nif]
 fn secure_random_bytes<'a>(env: Env<'a>, bytes: usize) -> NifResult<Binary<'a>> {
-    use rand::RngCore;
-
     let mut binary = NewBinary::new(env, bytes);
 
     rand::thread_rng()
@@ -16,7 +15,7 @@ fn secure_random_bytes<'a>(env: Env<'a>, bytes: usize) -> NifResult<Binary<'a>> 
 
 #[rustler::nif]
 fn fast_random_bytes<'a>(env: Env<'a>, bytes: usize) -> NifResult<Binary<'a>> {
-    use rand::{RngCore, SeedableRng};
+    use rand::SeedableRng;
 
     let mut binary = NewBinary::new(env, bytes);
 
