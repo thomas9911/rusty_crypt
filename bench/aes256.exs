@@ -10,8 +10,11 @@ Benchee.run(
   inputs: %{
     "Small" => List.duplicate("hallo", 2) |> :erlang.list_to_binary,
     "Medium" => List.duplicate("hallo", 20) |> :erlang.list_to_binary,
-    "Bigger" => List.duplicate("hallo", 500) |> :erlang.list_to_binary
-  }
+    "Bigger" => List.duplicate("hallo", 500) |> :erlang.list_to_binary,
+    "1mb" => RustyCrypt.Native.fast_random_bytes(1024**2),
+    # "100mb" => RustyCrypt.Native.fast_random_bytes(100 * 1024**2)
+  },
+  print: [fast_warning: false]
 )
 
 
@@ -70,3 +73,82 @@ Benchee.run(
 # Comparison:
 # rust        595.07 K
 # elixir      570.32 K - 1.04x slower +0.0729 μs
+
+
+
+
+# i7 with RUSTFLAGS
+# ##### With input Bigger #####
+# Name             ips        average  deviation         median
+#    99th %
+# elixir      335.77 K        2.98 μs    ±35.16%        3.07 μs
+#   6.14 μs
+# rust        311.86 K        3.21 μs   ±152.15%           0 μs
+#  10.24 μs
+
+# Comparison:
+# elixir      335.77 K
+# rust        311.86 K - 1.08x slower +0.23 μs
+
+# ##### With input Medium #####
+# Name             ips        average  deviation         median
+#    99th %
+# rust          1.10 M        0.91 μs    ±72.27%        1.02 μs
+#   3.07 μs
+# elixir        0.80 M        1.25 μs    ±48.92%        1.02 μs
+#   3.07 μs
+
+# Comparison:
+# rust          1.10 M
+# elixir        0.80 M - 1.37x slower +0.33 μs
+
+# ##### With input Small #####
+# Name             ips        average  deviation         median
+#    99th %
+# rust          1.22 M        0.82 μs    ±78.60%        1.02 μs
+#   3.07 μs
+# elixir        0.93 M        1.07 μs  ±1880.33%           0 μs
+# 102.40 μs
+
+# Comparison:
+# rust          1.22 M
+# elixir        0.93 M - 1.31x slower +0.25 μs
+
+
+
+
+# i7 without flags
+# ##### With input Bigger #####
+# Name             ips        average  deviation         median
+#    99th %
+# elixir      315.25 K        3.17 μs   ±157.43%           0 μs
+#  10.24 μs
+# rust        210.44 K        4.75 μs   ±113.32%           0 μs
+#  10.24 μs
+
+# Comparison:
+# elixir      315.25 K
+# rust        210.44 K - 1.50x slower +1.58 μs
+
+# ##### With input Medium #####
+# Name             ips        average  deviation         median
+#    99th %
+# rust        778.18 K        1.29 μs    ±82.37%        1.02 μs
+#   4.10 μs
+# elixir      755.19 K        1.32 μs   ±360.43%           0 μs
+#  10.24 μs
+
+# Comparison:
+# rust        778.18 K
+# elixir      755.19 K - 1.03x slower +0.0391 μs
+
+# ##### With input Small #####
+# Name             ips        average  deviation         median
+#    99th %
+# rust          1.11 M      903.21 ns    ±21.14%      819.20 ns     1638.40 ns
+# elixir        1.09 M      914.73 ns    ±60.68%        1024 ns
+#   2048 ns
+
+# Comparison:
+# rust          1.11 M
+# elixir        1.09 M - 1.01x slower +11.52 ns

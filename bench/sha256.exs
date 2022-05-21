@@ -7,7 +7,8 @@ Benchee.run(
     "Small" => List.duplicate("hallo", 2) |> :erlang.list_to_binary,
     "Medium" => List.duplicate("hallo", 20) |> :erlang.list_to_binary,
     "Bigger" => List.duplicate("hallo", 500) |> :erlang.list_to_binary
-  }
+  },
+  print: [fast_warning: false]
 )
 
 
