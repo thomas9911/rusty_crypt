@@ -1,6 +1,6 @@
 use crate::types::{BigInt, IoList};
 use num_bigint::Sign;
-use rustler::{Binary, Env, Error, NifResult};
+use rustler::{Binary, NewBinary, Env, Error, NifResult};
 
 #[rustler::nif]
 fn bytes_to_integer<'a>(binary: Binary) -> NifResult<BigInt> {
@@ -26,5 +26,16 @@ fn exor<'a>(env: Env<'a>, bin1: IoList<'a>, bin2: IoList<'a>) -> NifResult<Binar
 fn xor(buf: &mut [u8], data: &[u8]) {
     for i in 0..data.len() {
         buf[i] ^= data[i];
+    }
+}
+
+#[rustler::nif]
+fn iolist_to_binary<'a>(env: Env<'a>, iolist: IoList<'a>) -> NifResult<Binary<'a>> {
+    if iolist.is_list() {
+        let mut new_binary = NewBinary::new(env, iolist.len());
+        new_binary.as_mut_slice().copy_from_slice(iolist.as_slice());
+        Ok(new_binary.into())
+    } else {
+        Ok(iolist.0)
     }
 }

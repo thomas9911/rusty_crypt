@@ -56,4 +56,16 @@ defmodule RustyCrypt do
   ```
   """
   defdelegate bytes_to_integer(binary), to: RustyCrypt.Native
+
+  @doc """
+  Convert iolist to binary, just like `:erlang.iolist_to_binary/1`
+
+  ```elixir
+  iex> :erlang.iolist_to_binary(["test", "test"])
+  "testtest"
+  iex> RustyCrypt.iolist_to_binary(["test", "test"])
+  "testtest"
+  ```
+  """
+  defdelegate iolist_to_binary(binary), to: RustyCrypt.Native
 end

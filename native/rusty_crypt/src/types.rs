@@ -109,7 +109,17 @@ impl rustler::Encoder for BigInt {
     }
 }
 
-pub struct IoList<'a>(Binary<'a>);
+pub struct IoList<'a>(pub Binary<'a>, bool);
+
+impl<'a> IoList<'a> {
+    pub fn is_list(&self) -> bool {
+        self.1
+    }
+
+    pub fn is_binary(&self) -> bool {
+        !self.1
+    }
+}
 
 impl<'a> std::ops::Deref for IoList<'a> {
     type Target = Binary<'a>;
@@ -127,12 +137,12 @@ impl<'a> std::ops::DerefMut for IoList<'a> {
 
 impl<'a> rustler::Decoder<'a> for IoList<'a> {
     fn decode(term: Term<'a>) -> NifResult<Self> {
-        Ok(IoList(term.decode_as_binary()?))
+        Ok(IoList(term.decode_as_binary()?, term.is_list()))
     }
 }
 
 impl<'a> rustler::Encoder for IoList<'a> {
     fn encode<'c>(&self, env: Env<'c>) -> Term<'c> {
-        self.0.as_slice().encode(env)
+        self.as_slice().encode(env)
     }
 }
