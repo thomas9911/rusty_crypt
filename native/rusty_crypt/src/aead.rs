@@ -1,6 +1,6 @@
 use crate::types::IoList;
 use aes_gcm::aead::{AeadCore, AeadInPlace, Key, NewAead, Nonce, Tag};
-use aes_gcm::aes::{Aes192, Aes256};
+use aes_gcm::aes::{Aes128, Aes192, Aes256};
 use aes_gcm::{Aes128Gcm, Aes256Gcm, AesGcm};
 use ccm::consts::U12;
 use ccm::Ccm;
@@ -10,6 +10,8 @@ use rustler::{Atom, Binary, NewBinary, OwnedBinary};
 use rustler::{Env, Error, NifResult};
 use typenum::ToInt;
 
+type Aes128Ccm = Ccm<Aes128, U12, U12>;
+type Aes192Ccm = Ccm<Aes192, U12, U12>;
 type Aes256Ccm = Ccm<Aes256, U12, U12>;
 
 #[derive(rustler::NifUnitEnum)]
@@ -57,12 +59,16 @@ macro_rules! make_decrypt {
 make_encrypt!(aes128gcm_encrypt, Aes128Gcm);
 make_encrypt!(aes192gcm_encrypt, Aes192Gcm);
 make_encrypt!(aes256gcm_encrypt, Aes256Gcm);
+make_encrypt!(aes128ccm_encrypt, Aes128Ccm);
+make_encrypt!(aes192ccm_encrypt, Aes192Ccm);
 make_encrypt!(aes256ccm_encrypt, Aes256Ccm);
 make_encrypt!(chacha20_poly1305_encrypt, ChaCha20Poly1305);
 
 make_decrypt!(aes128gcm_decrypt, Aes128Gcm);
 make_decrypt!(aes192gcm_decrypt, Aes192Gcm);
 make_decrypt!(aes256gcm_decrypt, Aes256Gcm);
+make_decrypt!(aes128ccm_decrypt, Aes128Ccm);
+make_decrypt!(aes192ccm_decrypt, Aes192Ccm);
 make_decrypt!(aes256ccm_decrypt, Aes256Ccm);
 make_decrypt!(chacha20_poly1305_decrypt, ChaCha20Poly1305);
 
@@ -79,7 +85,6 @@ where
     T::KeySize: ToInt<usize>,
 {
     if iv.len() != <T as AeadCore>::NonceSize::to_int() {
-        // 96-bits; unique per message
         return Err(Error::Term(Box::new(Aes256Error::BadIVLength)));
     }
 

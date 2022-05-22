@@ -182,6 +182,56 @@ defmodule RustyCrypt.ErlangTest do
   end
 
   describe "crypto_one_time_aead" do
+    test "aes_gcm true" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_gcm,
+        <<0::128>>,
+        <<1::96>>,
+        "Just some text",
+        <<>>,
+        true
+      ])
+
+      assert RustyCrypt.Erlang.crypto_one_time_aead(
+               :aes_gcm,
+               <<0::128>>,
+               <<1::96>>,
+               "Just some text",
+               <<>>,
+               true
+             ) ==
+               RustyCrypt.Erlang.crypto_one_time_aead(
+                 :aes_128_gcm,
+                 <<0::128>>,
+                 <<1::96>>,
+                 "Just some text",
+                 <<>>,
+                 true
+               )
+    end
+
+    test "aes_128_gcm true" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_128_gcm,
+        <<0::128>>,
+        <<1::96>>,
+        "Just some text",
+        <<>>,
+        true
+      ])
+    end
+
+    test "aes_192_gcm true" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_192_gcm,
+        <<0::192>>,
+        <<1::96>>,
+        "Just some text",
+        <<>>,
+        true
+      ])
+    end
+
     test "aes_256_gcm true" do
       assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
         :aes_256_gcm,
@@ -190,6 +240,61 @@ defmodule RustyCrypt.ErlangTest do
         "Just some text",
         <<>>,
         true
+      ])
+    end
+
+    test "aes_gcm false" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_gcm,
+        <<0::128>>,
+        <<1::96>>,
+        <<36, 116, 170, 68, 39, 251, 29, 208, 62, 18, 152, 241, 29, 137>>,
+        <<>>,
+        <<253, 210, 77, 81, 182, 110, 51, 81, 68, 91, 116, 206, 64, 158, 31, 239>>,
+        false
+      ])
+
+      assert RustyCrypt.Erlang.crypto_one_time_aead(
+               :aes_128_gcm,
+               <<0::128>>,
+               <<1::96>>,
+               <<36, 116, 170, 68, 39, 251, 29, 208, 62, 18, 152, 241, 29, 137>>,
+               <<>>,
+               <<253, 210, 77, 81, 182, 110, 51, 81, 68, 91, 116, 206, 64, 158, 31, 239>>,
+               false
+             ) ==
+               RustyCrypt.Erlang.crypto_one_time_aead(
+                 :aes_gcm,
+                 <<0::128>>,
+                 <<1::96>>,
+                 <<36, 116, 170, 68, 39, 251, 29, 208, 62, 18, 152, 241, 29, 137>>,
+                 <<>>,
+                 <<253, 210, 77, 81, 182, 110, 51, 81, 68, 91, 116, 206, 64, 158, 31, 239>>,
+                 false
+               )
+    end
+
+    test "aes_128_gcm false" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_128_gcm,
+        <<0::128>>,
+        <<1::96>>,
+        <<36, 116, 170, 68, 39, 251, 29, 208, 62, 18, 152, 241, 29, 137>>,
+        <<>>,
+        <<253, 210, 77, 81, 182, 110, 51, 81, 68, 91, 116, 206, 64, 158, 31, 239>>,
+        false
+      ])
+    end
+
+    test "aes_192_gcm false" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_192_gcm,
+        <<0::192>>,
+        <<1::96>>,
+        <<64, 93, 199, 214, 40, 197, 133, 94, 58, 117, 92, 84, 189, 234>>,
+        <<>>,
+        <<102, 38, 51, 89, 70, 77, 94, 194, 161, 198, 181, 23, 170, 174, 61, 27>>,
+        false
       ])
     end
 
@@ -205,6 +310,56 @@ defmodule RustyCrypt.ErlangTest do
       ])
     end
 
+    test "aes_ccm true" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_ccm,
+        <<0::128>>,
+        <<1::96>>,
+        "Just some text",
+        <<>>,
+        true
+      ])
+
+      assert RustyCrypt.Erlang.crypto_one_time_aead(
+               :aes_ccm,
+               <<0::128>>,
+               <<1::96>>,
+               "Just some text",
+               <<>>,
+               true
+             ) ==
+               RustyCrypt.Erlang.crypto_one_time_aead(
+                 :aes_128_ccm,
+                 <<0::128>>,
+                 <<1::96>>,
+                 "Just some text",
+                 <<>>,
+                 true
+               )
+    end
+
+    test "aes_128_ccm true" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_128_ccm,
+        <<0::128>>,
+        <<1::96>>,
+        "Just some text",
+        <<>>,
+        true
+      ])
+    end
+
+    test "aes_192_ccm true" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_192_ccm,
+        <<0::192>>,
+        <<1::96>>,
+        "Just some text",
+        <<>>,
+        true
+      ])
+    end
+
     test "aes_256_ccm true" do
       assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
         :aes_256_ccm,
@@ -213,6 +368,61 @@ defmodule RustyCrypt.ErlangTest do
         "Just some text",
         <<>>,
         true
+      ])
+    end
+
+    test "aes_ccm false" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_ccm,
+        <<0::128>>,
+        <<1::96>>,
+        <<56, 10, 131, 200, 231, 201, 206, 107, 193, 86, 243, 11, 54, 49>>,
+        <<>>,
+        <<180, 41, 191, 64, 33, 150, 161, 154, 111, 64, 128, 229>>,
+        false
+      ])
+
+      assert RustyCrypt.Erlang.crypto_one_time_aead(
+               :aes_ccm,
+               <<0::128>>,
+               <<1::96>>,
+               <<56, 10, 131, 200, 231, 201, 206, 107, 193, 86, 243, 11, 54, 49>>,
+               <<>>,
+               <<180, 41, 191, 64, 33, 150, 161, 154, 111, 64, 128, 229>>,
+               false
+             ) ==
+               RustyCrypt.Erlang.crypto_one_time_aead(
+                 :aes_128_ccm,
+                 <<0::128>>,
+                 <<1::96>>,
+                 <<56, 10, 131, 200, 231, 201, 206, 107, 193, 86, 243, 11, 54, 49>>,
+                 <<>>,
+                 <<180, 41, 191, 64, 33, 150, 161, 154, 111, 64, 128, 229>>,
+                 false
+               )
+    end
+
+    test "aes_128_ccm false" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_128_ccm,
+        <<0::128>>,
+        <<1::96>>,
+        <<56, 10, 131, 200, 231, 201, 206, 107, 193, 86, 243, 11, 54, 49>>,
+        <<>>,
+        <<180, 41, 191, 64, 33, 150, 161, 154, 111, 64, 128, 229>>,
+        false
+      ])
+    end
+
+    test "aes_192_ccm false" do
+      assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [
+        :aes_192_ccm,
+        <<0::192>>,
+        <<1::96>>,
+        <<60, 63, 243, 85, 24, 229, 137, 246, 180, 125, 102, 56, 131, 31>>,
+        <<>>,
+        <<220, 207, 91, 230, 5, 24, 35, 119, 242, 24, 63, 248>>,
+        false
       ])
     end
 

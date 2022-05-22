@@ -48,6 +48,8 @@ defmodule RustyCrypt.Native do
   @spec aes256ccm_encrypt(key :: binary, data :: binary, iv :: binary, aad :: binary) ::
           {:ok, {data :: binary, tag :: binary}} | {:error, atom}
   def aes256ccm_encrypt(_key, _data, _iv, _aad), do: nif_error()
+  def aes192ccm_encrypt(_key, _data, _iv, _aad), do: nif_error()
+  def aes128ccm_encrypt(_key, _data, _iv, _aad), do: nif_error()
 
   @spec aes256ccm_decrypt(
           key :: binary,
@@ -57,6 +59,8 @@ defmodule RustyCrypt.Native do
           tag :: binary
         ) :: {:ok, data :: binary} | {:error, atom}
   def aes256ccm_decrypt(_key, _text, _iv, _aad, _tag), do: nif_error()
+  def aes192ccm_decrypt(_key, _text, _iv, _aad, _tag), do: nif_error()
+  def aes128ccm_decrypt(_key, _text, _iv, _aad, _tag), do: nif_error()
 
   @spec chacha20_poly1305_encrypt(key :: binary, data :: binary, iv :: binary, aad :: binary) ::
           {:ok, {data :: binary, tag :: binary}} | {:error, atom}

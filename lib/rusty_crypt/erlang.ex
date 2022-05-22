@@ -96,44 +96,33 @@ defmodule RustyCrypt.Erlang do
     mac(:hmac, method, key, data)
   end
 
-  def crypto_one_time_aead(:aes_256_gcm, key, iv, text, aad, true) do
-    key
-    |> RustyCrypt.Cipher.Aes256gcm.encrypt(iv, text, aad)
-    |> unwrap_or_raise()
-  end
+  %{
+    :aes_gcm => RustyCrypt.Cipher.Aes128gcm,
+    :aes_128_gcm => RustyCrypt.Cipher.Aes128gcm,
+    :aes_192_gcm => RustyCrypt.Cipher.Aes192gcm,
+    :aes_256_gcm => RustyCrypt.Cipher.Aes256gcm,
+    :aes_ccm => RustyCrypt.Cipher.Aes128ccm,
+    :aes_128_ccm => RustyCrypt.Cipher.Aes128ccm,
+    :aes_192_ccm => RustyCrypt.Cipher.Aes192ccm,
+    :aes_256_ccm => RustyCrypt.Cipher.Aes256ccm,
+    :chacha20_poly1305 => RustyCrypt.Cipher.Chacha20Poly1305
+  }
+  |> Enum.map(fn {method, module} ->
+    def crypto_one_time_aead(unquote(method), key, iv, text, aad, true) do
+      key
+      |> unquote(module).encrypt(iv, text, aad)
+      |> unwrap_or_raise()
+    end
 
-  def crypto_one_time_aead(:aes_256_ccm, key, iv, text, aad, true) do
-    key
-    |> RustyCrypt.Cipher.Aes256ccm.encrypt(iv, text, aad)
-    |> unwrap_or_raise()
-  end
-
-  def crypto_one_time_aead(:chacha20_poly1305, key, iv, text, aad, true) do
-    key
-    |> RustyCrypt.Cipher.Chacha20Poly1305.encrypt(iv, text, aad)
-    |> unwrap_or_raise()
-  end
+    def crypto_one_time_aead(unquote(method), key, iv, data, aad, tag, false) do
+      key
+      |> unquote(module).decrypt(iv, data, aad, tag)
+      |> unwrap_or_raise()
+    end
+  end)
 
   def crypto_one_time_aead(_, _, _, _, _, _) do
     raise ArgumentError, message: "argument error: 'Not an AEAD cipher'"
-  end
-
-  def crypto_one_time_aead(:aes_256_gcm, key, iv, data, aad, tag, false) do
-    key
-    |> RustyCrypt.Cipher.Aes256gcm.decrypt(iv, data, aad, tag)
-    |> unwrap_or_raise()
-  end
-
-  def crypto_one_time_aead(:aes_256_ccm, key, iv, data, aad, tag, false) do
-    key
-    |> RustyCrypt.Cipher.Aes256ccm.decrypt(iv, data, aad, tag)
-    |> unwrap_or_raise()
-  end
-
-  def crypto_one_time_aead(:chacha20_poly1305, key, iv, data, aad, tag, false) do
-    key
-    |> RustyCrypt.Cipher.Chacha20Poly1305.decrypt(iv, data, aad, tag)
-    |> unwrap_or_raise()
   end
 
   def crypto_one_time_aead(_, _, _, _, _, _, _) do
