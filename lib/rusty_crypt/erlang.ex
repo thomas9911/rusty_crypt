@@ -48,6 +48,16 @@ defmodule RustyCrypt.Erlang do
     raise ArgumentError
   end
 
+  def mac(:poly1305, key, data) do
+    mac(:poly1305, nil, key, data)
+  end
+
+  def mac(:poly1305, _, key, data) do
+    key
+    |> RustyCrypt.Mac.poly1305(data)
+    |> unwrap_or_raise(:mac)
+  end
+
   def mac(:hmac, :sha224, key, data) do
     RustyCrypt.Mac.Hmac.sha2_224(key, data)
   end
@@ -135,16 +145,23 @@ defmodule RustyCrypt.Erlang do
 
   defdelegate exor(bin1, bin2), to: RustyCrypt, as: :xor
 
-  defp unwrap_or_raise({:ok, out}), do: out
+  @spec unwrap_or_raise(any, atom) :: any
+  defp unwrap_or_raise(result, path \\ :aead)
+  defp unwrap_or_raise({:ok, out}, _), do: out
 
-  defp unwrap_or_raise({:error, :bad_iv_length}) do
+  defp unwrap_or_raise({:error, :bad_iv_length}, _) do
     :erlang.error({:badarg, {'aead.c', 109}, 'Bad IV length'})
   end
 
-  defp unwrap_or_raise({:error, :bad_key_length}) do
+  defp unwrap_or_raise({:error, :bad_key_length}, :mac) do
+    :erlang.error({:badarg, {'mac.c', 231}, 'Bad key length'})
+  end
+
+  defp unwrap_or_raise({:error, :bad_key_length}, _) do
     :erlang.error({:badarg, {'aead.c', 90}, 'Unknown cipher'})
   end
 
-  defp unwrap_or_raise({:error, :bad_tag_length}), do: :error
-  defp unwrap_or_raise({:error, :decrypt_failed}), do: :error
+  defp unwrap_or_raise({:error, :bad_tag_length}, _), do: :error
+  defp unwrap_or_raise({:error, :decrypt_failed}, _), do: :error
+  defp unwrap_or_raise(result, :mac) when is_binary(result), do: result
 end

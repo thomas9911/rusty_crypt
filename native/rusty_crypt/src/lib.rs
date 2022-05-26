@@ -1,4 +1,5 @@
 pub mod aead;
+pub mod error;
 pub mod general;
 pub mod hash;
 pub mod mac;
@@ -36,6 +37,7 @@ rustler::init!(
         general::bytes_to_integer,
         general::exor,
         general::iolist_to_binary,
+        mac::poly1305,
         mac::hmac_sha2_224,
         mac::hmac_sha2_256,
         mac::hmac_sha2_384,

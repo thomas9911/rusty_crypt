@@ -1,4 +1,5 @@
 use crate::types::IoList;
+use crate::error::CryptoError;
 use aes_gcm::aead::{AeadCore, AeadInPlace, Key, NewAead, Nonce, Tag};
 use aes_gcm::aes::{Aes128, Aes192, Aes256};
 use aes_gcm::{Aes128Gcm, Aes256Gcm, AesGcm};
@@ -13,15 +14,6 @@ use typenum::ToInt;
 type Aes128Ccm = Ccm<Aes128, U12, U12>;
 type Aes192Ccm = Ccm<Aes192, U12, U12>;
 type Aes256Ccm = Ccm<Aes256, U12, U12>;
-
-#[derive(rustler::NifUnitEnum)]
-enum Aes256Error {
-    EncryptFailed,
-    DecryptFailed,
-    BadIVLength,
-    BadKeyLength,
-    BadTagLength,
-}
 
 type Aes192Gcm = AesGcm<Aes192, U12>;
 
@@ -85,11 +77,11 @@ where
     T::KeySize: ToInt<usize>,
 {
     if iv.len() != <T as AeadCore>::NonceSize::to_int() {
-        return Err(Error::Term(Box::new(Aes256Error::BadIVLength)));
+        return Err(Error::Term(Box::new(CryptoError::BadIVLength)));
     }
 
     if key.len() != <T as NewAead>::KeySize::to_int() {
-        return Err(Error::Term(Box::new(Aes256Error::BadKeyLength)));
+        return Err(Error::Term(Box::new(CryptoError::BadKeyLength)));
     }
 
     let key = Key::<T>::from_slice(key.as_slice());
@@ -101,7 +93,7 @@ where
 
     let tag = cipher
         .encrypt_in_place_detached(nonce, aad.as_slice(), &mut text.as_mut_slice())
-        .map_err(|_| Error::Term(Box::new(Aes256Error::EncryptFailed)))?;
+        .map_err(|_| Error::Term(Box::new(CryptoError::EncryptFailed)))?;
 
     let mut tag_binary = NewBinary::new(env, tag.len());
     tag_binary.as_mut_slice().copy_from_slice(tag.as_slice());
@@ -126,13 +118,13 @@ where
     T::TagSize: ToInt<usize>,
 {
     if iv.len() != <T as AeadCore>::NonceSize::to_int() {
-        return Err(Error::Term(Box::new(Aes256Error::BadIVLength)));
+        return Err(Error::Term(Box::new(CryptoError::BadIVLength)));
     }
     if key.len() != <T as NewAead>::KeySize::to_int() {
-        return Err(Error::Term(Box::new(Aes256Error::BadKeyLength)));
+        return Err(Error::Term(Box::new(CryptoError::BadKeyLength)));
     }
     if tag.len() != <T as AeadCore>::TagSize::to_int() {
-        return Err(Error::Term(Box::new(Aes256Error::BadTagLength)));
+        return Err(Error::Term(Box::new(CryptoError::BadTagLength)));
     }
     let key = Key::<T>::from_slice(key.as_slice());
     let cipher = T::new(key);
@@ -144,7 +136,7 @@ where
 
     cipher
         .decrypt_in_place_detached(nonce, aad.as_slice(), &mut text.as_mut_slice(), tag)
-        .map_err(|_| Error::Term(Box::new(Aes256Error::DecryptFailed)))?;
+        .map_err(|_| Error::Term(Box::new(CryptoError::DecryptFailed)))?;
 
     let mut tag_binary = NewBinary::new(env, tag.len());
     tag_binary.as_mut_slice().copy_from_slice(tag.as_slice());

@@ -17,7 +17,7 @@ cmac = "0.7.1"
 crypto-common = "0.1.3"
 hmac = "0.12.1"
 num-bigint = "0.4.3"
-poly1305 = "0.7.2"
+poly1305_lib = { version = "0.7.2",  package = 'poly1305'}
 rand = { version = "0.8.5", features = ["small_rng"] }
 rustler = "0.25.0"
 rustler_sys = "2.2.0"

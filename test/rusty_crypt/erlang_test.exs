@@ -73,6 +73,25 @@ defmodule RustyCrypt.ErlangTest do
        }}
     end
 
+    test "poly1305/3", %{data: data} do
+      key = Bytes.secure_random(32)
+
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:poly1305, key, data])
+    end
+
+    test "poly1305/4", %{data: data} do
+      key = Bytes.secure_random(32)
+
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:poly1305, nil, key, data])
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:poly1305, "whatever", key, data])
+    end
+
+    test "poly1305 invalid secret length", %{data: data} do
+      key = Bytes.secure_random(15)
+
+      assert_same_exception(:crypto, RustyCrypt.Erlang, :mac, [:poly1305, key, data])
+    end
+
     test "hmac sha224", %{key: key, data: data} do
       assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha224, key, data])
     end

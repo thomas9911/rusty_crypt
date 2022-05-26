@@ -90,6 +90,8 @@ defmodule RustyCrypt.Native do
   @spec iolist_to_binary(iolist) :: binary
   def iolist_to_binary(_iolist), do: nif_error()
 
+  @spec poly1305(binary, binary) :: binary
+  def poly1305(_key, _data), do: nif_error()
   @spec hmac_sha2_224(binary, binary) :: binary
   def hmac_sha2_224(_key, _data), do: nif_error()
   @spec hmac_sha2_256(binary, binary) :: binary
