@@ -1,6 +1,6 @@
-use crate::types::{BigInt, IoList};
+use crate::types::{BigInt, BinaryInteger, IoList};
 use num_bigint::Sign;
-use rustler::{Binary, NewBinary, Env, Error, NifResult};
+use rustler::{Binary, Env, Error, NewBinary, NifResult};
 
 #[rustler::nif]
 fn bytes_to_integer<'a>(binary: Binary) -> NifResult<BigInt> {
@@ -38,4 +38,13 @@ fn iolist_to_binary<'a>(env: Env<'a>, iolist: IoList<'a>) -> NifResult<Binary<'a
     } else {
         Ok(iolist.0)
     }
+}
+
+#[rustler::nif]
+fn mod_pow<'a>(n: BinaryInteger, p: BinaryInteger, m: BinaryInteger) -> NifResult<BinaryInteger> {
+    if m.0.sign() == num_bigint::Sign::NoSign {
+        return Err(Error::BadArg)
+    }
+    
+    Ok(BinaryInteger(n.0.modpow(&p.0, &m.0)))
 }

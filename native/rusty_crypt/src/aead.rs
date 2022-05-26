@@ -1,5 +1,5 @@
-use crate::types::IoList;
 use crate::error::CryptoError;
+use crate::types::IoList;
 use aes_gcm::aead::{AeadCore, AeadInPlace, Key, NewAead, Nonce, Tag};
 use aes_gcm::aes::{Aes128, Aes192, Aes256};
 use aes_gcm::{Aes128Gcm, Aes256Gcm, AesGcm};

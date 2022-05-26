@@ -1,12 +1,12 @@
-use crate::types::IoList;
 use crate::error::CryptoError;
+use crate::types::IoList;
 use hmac::{Hmac, Mac};
 use rustler::{Binary, NewBinary};
 use rustler::{Env, Error, NifResult};
 use sha2::digest;
 
-use poly1305_lib::Poly1305;
 use poly1305_lib::universal_hash::NewUniversalHash;
+use poly1305_lib::Poly1305;
 
 macro_rules! make_hmac {
     ($func_name:ident, $hasher:ty) => {
@@ -18,9 +18,9 @@ macro_rules! make_hmac {
 }
 
 #[rustler::nif]
-fn poly1305<'a>(env: Env<'a>, secret: IoList, data: IoList)  -> NifResult<Binary<'a>> {
+fn poly1305<'a>(env: Env<'a>, secret: IoList, data: IoList) -> NifResult<Binary<'a>> {
     if secret.as_slice().len() != poly1305_lib::KEY_SIZE {
-        return Err(CryptoError::BadKeyLength.to_nif_error())
+        return Err(CryptoError::BadKeyLength.to_nif_error());
     }
 
     let mut binary = NewBinary::new(env, poly1305_lib::BLOCK_SIZE);
@@ -28,10 +28,9 @@ fn poly1305<'a>(env: Env<'a>, secret: IoList, data: IoList)  -> NifResult<Binary
     let key = poly1305_lib::Key::from_slice(secret.as_slice());
 
     // let mut poly = Poly1305::new(key);
-        // .map_err(|_| Error::RaiseAtom("allocation_failed"))?;
+    // .map_err(|_| Error::RaiseAtom("allocation_failed"))?;
 
     let tag = Poly1305::new(key).compute_unpadded(data.as_slice());
-
 
     binary
         .as_mut_slice()

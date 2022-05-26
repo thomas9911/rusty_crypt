@@ -26,7 +26,7 @@ defmodule RustyCrypt.Mac.Poly1305Test do
   end
 
   test "poly1305, empty" do
-    expected = <<-1 :: 128>>
+    expected = <<-1::128>>
 
     assert expected == Mac.poly1305(@secret, "")
     assert expected == :crypto.mac(:poly1305, @secret, "")

@@ -6,7 +6,6 @@ pub mod mac;
 pub mod random;
 pub mod types;
 
-
 rustler::init!(
     "Elixir.RustyCrypt.Native",
     [
@@ -37,6 +36,7 @@ rustler::init!(
         general::bytes_to_integer,
         general::exor,
         general::iolist_to_binary,
+        general::mod_pow,
         mac::poly1305,
         mac::hmac_sha2_224,
         mac::hmac_sha2_256,
@@ -48,4 +48,3 @@ rustler::init!(
         mac::hmac_sha3_512,
     ]
 );
-

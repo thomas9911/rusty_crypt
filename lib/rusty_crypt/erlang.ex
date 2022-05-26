@@ -145,6 +145,8 @@ defmodule RustyCrypt.Erlang do
 
   defdelegate exor(bin1, bin2), to: RustyCrypt, as: :xor
 
+  defdelegate mod_pow(n, p, m), to: RustyCrypt
+
   @spec unwrap_or_raise(any, atom) :: any
   defp unwrap_or_raise(result, path \\ :aead)
   defp unwrap_or_raise({:ok, out}, _), do: out

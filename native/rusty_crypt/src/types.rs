@@ -1,6 +1,6 @@
 use num_bigint::Sign;
 use rustler::types::atom::error;
-use rustler::{Binary, Env, Error, NifResult, Term};
+use rustler::{Binary, Env, Error, NewBinary, NifResult, Term};
 
 pub struct BigInt(num_bigint::BigInt);
 
@@ -24,7 +24,7 @@ impl Into<BigInt> for num_bigint::BigInt {
     }
 }
 
-fn decode_big_integer(input: &[u8]) -> NifResult<BigInt> {
+fn decode_big_integer(input: &[u8]) -> NifResult<num_bigint::BigInt> {
     if input[0] != 131 {
         return Err(Error::BadArg);
     };
@@ -67,7 +67,7 @@ fn decode_big_integer(input: &[u8]) -> NifResult<BigInt> {
         _ => return Err(Error::BadArg),
     };
 
-    Ok(big_int.into())
+    Ok(big_int)
 }
 
 fn encode_big_integer(big_int: &BigInt) -> Vec<u8> {
@@ -94,7 +94,7 @@ fn encode_big_integer(big_int: &BigInt) -> Vec<u8> {
 
 impl<'a> rustler::Decoder<'a> for BigInt {
     fn decode(term: Term<'a>) -> NifResult<Self> {
-        decode_big_integer(term.to_binary().as_slice())
+        decode_big_integer(term.to_binary().as_slice()).map(|x| x.into())
     }
 }
 
@@ -105,6 +105,45 @@ impl rustler::Encoder for BigInt {
             term
         } else {
             error().encode(env)
+        }
+    }
+}
+
+pub struct BinaryInteger(pub num_bigint::BigInt);
+
+impl<'a> rustler::Decoder<'a> for BinaryInteger {
+    fn decode(term: Term<'a>) -> NifResult<Self> {
+        if let Ok(integer) = term.decode::<BigInt>() {
+            if integer.sign() == Sign::Minus {
+                // encode negative integers as positive unsigned integers
+                Ok(BinaryInteger(num_bigint::BigInt::from_bytes_be(
+                    Sign::Plus,
+                    &integer.0.to_signed_bytes_be(),
+                )))
+            } else {
+                Ok(BinaryInteger(integer.0))
+            }
+        } else {
+            let bin: rustler::Binary = term.decode()?;
+            Ok(BinaryInteger(num_bigint::BigInt::from_bytes_be(
+                Sign::Plus,
+                bin.as_slice(),
+            )))
+        }
+    }
+}
+
+impl rustler::Encoder for BinaryInteger {
+    fn encode<'c>(&self, env: Env<'c>) -> Term<'c> {
+        if self.0.sign() == Sign::NoSign {
+            NewBinary::new(env, 0).into()
+        } else {
+            let mut result = self.0.to_bytes_be().1;
+            let mut binary = NewBinary::new(env, result.len());
+
+            binary.as_mut_slice().copy_from_slice(result.as_mut_slice());
+
+            binary.into()
         }
     }
 }

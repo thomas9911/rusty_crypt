@@ -14,6 +14,7 @@ defmodule RustyCrypt do
   and [RustCrypto](https://github.com/RustCrypto)
   (which I used to implement the different algorithms)
   """
+  @type binary_or_integer :: binary | integer
 
   @doc """
   Xors's two binarys together.
@@ -39,6 +40,7 @@ defmodule RustyCrypt do
   <<78, 64, 46, 149>> # not zeroes so hashes are not the same
   ```
   """
+  @spec xor(iodata, iodata) :: binary
   defdelegate xor(bin1, bin2), to: RustyCrypt.Native, as: :exor
 
   @doc """
@@ -55,6 +57,7 @@ defmodule RustyCrypt do
   86
   ```
   """
+  @spec bytes_to_integer(binary) :: integer
   defdelegate bytes_to_integer(binary), to: RustyCrypt.Native
 
   @doc """
@@ -67,5 +70,15 @@ defmodule RustyCrypt do
   "testtest"
   ```
   """
+  @spec iolist_to_binary(iolist) :: binary
   defdelegate iolist_to_binary(binary), to: RustyCrypt.Native
+
+  @doc """
+  Calculate n^p % m
+
+  This is mainly used for cryptography,
+  so negative integers get "cast" as binaries, so for instance -1 => <<255>>
+  """
+  @spec mod_pow(binary_or_integer, binary_or_integer, binary_or_integer) :: binary
+  defdelegate mod_pow(n, p, m), to: RustyCrypt.Native
 end

@@ -200,6 +200,24 @@ defmodule RustyCrypt.ErlangTest do
     end
   end
 
+  describe "mod_pow" do
+    test "works" do
+      assert_same(:crypto, RustyCrypt.Erlang, :mod_pow, [
+        <<123, 123, 123>>,
+        <<123, 123, 121>>,
+        <<123, 123, 121, 123>>
+      ])
+    end
+
+    test "raise on zero mod" do
+      assert_same_exception(:crypto, RustyCrypt.Erlang, :mod_pow, [
+        <<123, 123, 123>>,
+        <<123, 123, 121>>,
+        0
+      ])
+    end
+  end
+
   describe "crypto_one_time_aead" do
     test "aes_gcm true" do
       assert_same(:crypto, RustyCrypt.Erlang, :crypto_one_time_aead, [

@@ -87,6 +87,8 @@ defmodule RustyCrypt.Native do
   @spec exor(binary, binary) :: binary
   def exor(_bin1, _bin2), do: nif_error()
 
+  def mod_pow(_n, _p, _m), do: nif_error()
+
   @spec iolist_to_binary(iolist) :: binary
   def iolist_to_binary(_iolist), do: nif_error()
 
