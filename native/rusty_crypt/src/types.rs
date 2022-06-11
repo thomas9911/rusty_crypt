@@ -24,6 +24,12 @@ impl Into<BigInt> for num_bigint::BigInt {
     }
 }
 
+impl From<BigInt> for num_bigint::BigInt {
+    fn from(input: BigInt) -> num_bigint::BigInt {
+        input.0
+    }
+}
+
 fn decode_big_integer(input: &[u8]) -> NifResult<num_bigint::BigInt> {
     if input[0] != 131 {
         return Err(Error::BadArg);

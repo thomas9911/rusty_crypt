@@ -80,6 +80,8 @@ defmodule RustyCrypt.Native do
   def secure_random_bytes(_byte_size), do: nif_error()
   @spec fast_random_bytes(pos_integer) :: binary
   def fast_random_bytes(_byte_size), do: nif_error()
+  @spec rand_uniform(integer, integer) :: binary
+  def rand_uniform(_low, _high), do: nif_error()
 
   @spec bytes_to_integer(binary) :: integer
   def bytes_to_integer(_bytes), do: nif_error()
