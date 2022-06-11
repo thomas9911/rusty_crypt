@@ -531,4 +531,27 @@ defmodule RustyCrypt.ErlangTest do
       ])
     end
   end
+
+  describe "rand_uniform" do
+    test "works" do
+      assert RustyCrypt.Erlang.rand_uniform(0, 100) in 0..99
+      # we call it in this weird way because otherwise it prints a deprecation warning
+      # if this stops working call :rand.uniform(0, 100)
+      assert apply(:crypto, :rand_uniform, [0, 100]) in 0..99
+    end
+
+    test "exclusive range" do
+      assert_same(:crypto, RustyCrypt.Erlang, :rand_uniform, [
+        0,
+        1
+      ])
+    end
+
+    test "reverse low, high" do
+      assert_same_exception(:crypto, RustyCrypt.Erlang, :rand_uniform, [
+        100,
+        -100
+      ])
+    end
+  end
 end

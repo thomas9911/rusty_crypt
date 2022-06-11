@@ -15,6 +15,8 @@ defmodule RustyCrypt.Random.Bytes do
   """
 
   @doc """
+  This function is similar to `:crypto.strong_rand_bytes/1`
+
   Uses Rust's [rand::ThreadRng](https://docs.rs/rand/latest/rand/rngs/struct.ThreadRng.html)
   which is a struct that uses ChaCha12 for generating random numbers and operating system’s random number source
   for seeding. Also automatically reseeds after a specific amount of bytes. Check their documentation for more details.
@@ -28,9 +30,11 @@ defmodule RustyCrypt.Random.Bytes do
   defdelegate secure_random(amount), to: RustyCrypt.Native, as: :secure_random_bytes
 
   @doc """
+  This function is similar to `:rand.bytes/1`
+
   uses Rust's [rand::SmallRng](https://docs.rs/rand/latest/rand/rngs/struct.SmallRng.html)
   which is a struct that uses Xoshiro256PlusPlus for generating random numbers which
-  are not no cryptographically secure.Check their documentation for more details.
+  are not no cryptographically secure. Check their documentation for more details.
 
   ```elixir
   iex> RustyCrypt.Random.Bytes.fast_random(12) |> byte_size()

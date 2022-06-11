@@ -147,6 +147,8 @@ defmodule RustyCrypt.Erlang do
 
   defdelegate mod_pow(n, p, m), to: RustyCrypt
 
+  defdelegate rand_uniform(low, high), to: RustyCrypt.Random, as: :uniform
+
   @spec unwrap_or_raise(any, atom) :: any
   defp unwrap_or_raise(result, path \\ :aead)
   defp unwrap_or_raise({:ok, out}, _), do: out

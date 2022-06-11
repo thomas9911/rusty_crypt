@@ -7,6 +7,10 @@ defmodule RustyCrypt.Random do
   @doc """
   Generate a integer between `low` and `high`
 
+  Uses Rust's [rand::ThreadRng](https://docs.rs/rand/latest/rand/rngs/struct.ThreadRng.html)
+  which is a struct that uses ChaCha12 for generating random numbers and operating system’s random number source
+  for seeding. Also automatically reseeds after a specific amount of bytes. Check their documentation for more details.
+
   ```elixir
   iex> RustyCrypt.Random.uniform(-10, 10) in -10..9
   true
