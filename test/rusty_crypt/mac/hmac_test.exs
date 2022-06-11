@@ -11,6 +11,14 @@ defmodule RustyCrypt.Mac.HmacTest do
           141, 101, 74, 185, 242, 233, 109, 197, 199, 149, 234, 23, 111, 162, 14, 222, 141, 133,
           76, 52, 47, 144, 53, 51>>
 
+  test "sha1" do
+    expected =
+      <<2, 63, 43, 55, 249, 120, 111, 185, 71, 172, 10, 109, 97, 149, 44, 20, 130, 100, 199, 37>>
+
+    assert expected == Hmac.sha1(@secret, @data)
+    assert expected == :crypto.mac(:hmac, :sha, @secret, @data)
+  end
+
   test "sha2_224" do
     expected =
       <<209, 8, 202, 211, 28, 254, 147, 69, 96, 187, 162, 175, 83, 98, 209, 5, 55, 29, 82, 231,

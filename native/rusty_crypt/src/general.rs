@@ -43,8 +43,8 @@ fn iolist_to_binary<'a>(env: Env<'a>, iolist: IoList<'a>) -> NifResult<Binary<'a
 #[rustler::nif]
 fn mod_pow<'a>(n: BinaryInteger, p: BinaryInteger, m: BinaryInteger) -> NifResult<BinaryInteger> {
     if m.0.sign() == num_bigint::Sign::NoSign {
-        return Err(Error::BadArg)
+        return Err(Error::BadArg);
     }
-    
+
     Ok(BinaryInteger(n.0.modpow(&p.0, &m.0)))
 }

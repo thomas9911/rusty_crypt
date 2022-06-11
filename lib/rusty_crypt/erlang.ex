@@ -12,6 +12,10 @@ defmodule RustyCrypt.Erlang do
     [:aes_256_ccm, :aes_256_gcm, :chacha20_poly1305]
   end
 
+  def hash(:sha, data) do
+    RustyCrypt.Hashing.Sha1.sha(data)
+  end
+
   def hash(:sha224, data) do
     RustyCrypt.Hashing.Sha2.sha224(data)
   end
@@ -56,6 +60,10 @@ defmodule RustyCrypt.Erlang do
     key
     |> RustyCrypt.Mac.poly1305(data)
     |> unwrap_or_raise(:mac)
+  end
+
+  def mac(:hmac, :sha, key, data) do
+    RustyCrypt.Mac.Hmac.sha1(key, data)
   end
 
   def mac(:hmac, :sha224, key, data) do

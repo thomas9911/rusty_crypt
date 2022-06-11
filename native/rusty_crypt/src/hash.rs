@@ -1,8 +1,14 @@
 use crate::types::IoList;
+use ::sha1::Sha1;
 use rustler::{Binary, Env, NewBinary};
 use sha2::{Digest, Sha224, Sha256, Sha384, Sha512};
 use sha3::{Sha3_224, Sha3_256, Sha3_384, Sha3_512};
 use std::io::Write;
+
+#[rustler::nif]
+fn sha1<'a>(env: Env<'a>, data: IoList) -> Binary<'a> {
+    inner_hash::<Sha1>(env, data)
+}
 
 #[rustler::nif]
 fn sha224<'a>(env: Env<'a>, data: IoList) -> Binary<'a> {

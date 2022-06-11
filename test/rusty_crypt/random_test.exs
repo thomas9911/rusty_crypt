@@ -13,7 +13,7 @@ defmodule RustyCrypt.RandomTest do
     # variance 35/12 = 2.9166666666666665
     # std sqrt(25/12)
 
-    n = 1000
+    n = 10000
     values = dice_throws(n)
 
     mean = Enum.sum(values) / n

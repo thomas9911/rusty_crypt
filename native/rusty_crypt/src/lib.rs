@@ -3,12 +3,14 @@ pub mod error;
 pub mod general;
 pub mod hash;
 pub mod mac;
+pub mod pbkdf2;
 pub mod random;
 pub mod types;
 
 rustler::init!(
     "Elixir.RustyCrypt.Native",
     [
+        hash::sha1,
         hash::sha224,
         hash::sha256,
         hash::sha384,
@@ -39,6 +41,7 @@ rustler::init!(
         general::iolist_to_binary,
         general::mod_pow,
         mac::poly1305,
+        mac::hmac_sha1,
         mac::hmac_sha2_224,
         mac::hmac_sha2_256,
         mac::hmac_sha2_384,
@@ -47,5 +50,10 @@ rustler::init!(
         mac::hmac_sha3_256,
         mac::hmac_sha3_384,
         mac::hmac_sha3_512,
+        pbkdf2::pbkdf2_sha1,
+        pbkdf2::pbkdf2_sha224,
+        pbkdf2::pbkdf2_sha256,
+        pbkdf2::pbkdf2_sha384,
+        pbkdf2::pbkdf2_sha512,
     ]
 );

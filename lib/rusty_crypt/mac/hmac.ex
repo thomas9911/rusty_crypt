@@ -16,6 +16,10 @@ defmodule RustyCrypt.Mac.Hmac do
   ```
   """
 
+  @doc "Calculate hmac sha1"
+  @spec sha1(binary, binary) :: binary
+  defdelegate sha1(key, data), to: RustyCrypt.Native, as: :hmac_sha1
+
   @doc "Calculate hmac sha2 224"
   @spec sha2_224(binary, binary) :: binary
   defdelegate sha2_224(key, data), to: RustyCrypt.Native, as: :hmac_sha2_224

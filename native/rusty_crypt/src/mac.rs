@@ -63,6 +63,7 @@ where
     Ok(binary.into())
 }
 
+make_hmac!(hmac_sha1, sha1::Sha1);
 make_hmac!(hmac_sha2_224, sha2::Sha224);
 make_hmac!(hmac_sha2_256, sha2::Sha256);
 make_hmac!(hmac_sha2_384, sha2::Sha384);

@@ -1,8 +1,8 @@
-use rand::RngCore;
+use crate::types::BigInt;
 use rand::distributions::{Distribution, Uniform};
+use rand::RngCore;
 use rustler::{Binary, NewBinary};
 use rustler::{Env, Error, NifResult};
-use crate::types::BigInt;
 
 #[rustler::nif]
 fn secure_random_bytes<'a>(env: Env<'a>, bytes: usize) -> NifResult<Binary<'a>> {
@@ -33,7 +33,7 @@ fn rand_uniform<'a>(low: BigInt, high: BigInt) -> NifResult<BigInt> {
     use std::cmp::PartialOrd;
 
     if low.ge(&high) {
-        return Err(Error::BadArg)
+        return Err(Error::BadArg);
     }
 
     let low: num_bigint::BigInt = low.into();

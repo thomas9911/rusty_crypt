@@ -4,6 +4,9 @@ defmodule RustyCrypt.Native do
 
   # module to link to the rust library, this module is there so we can define the public api how we want
 
+  @spec sha1(binary) :: binary
+  def sha1(_data), do: nif_error()
+
   @spec sha224(binary) :: binary
   def sha224(_data), do: nif_error()
 
@@ -96,6 +99,8 @@ defmodule RustyCrypt.Native do
 
   @spec poly1305(binary, binary) :: binary
   def poly1305(_key, _data), do: nif_error()
+  @spec hmac_sha1(binary, binary) :: binary
+  def hmac_sha1(_key, _data), do: nif_error()
   @spec hmac_sha2_224(binary, binary) :: binary
   def hmac_sha2_224(_key, _data), do: nif_error()
   @spec hmac_sha2_256(binary, binary) :: binary
@@ -112,6 +117,12 @@ defmodule RustyCrypt.Native do
   def hmac_sha3_384(_key, _data), do: nif_error()
   @spec hmac_sha3_512(binary, binary) :: binary
   def hmac_sha3_512(_key, _data), do: nif_error()
+
+  def pbkdf2_sha1(_password, _salt, _iter, _out_size), do: nif_error()
+  def pbkdf2_sha224(_password, _salt, _iter, _out_size), do: nif_error()
+  def pbkdf2_sha256(_password, _salt, _iter, _out_size), do: nif_error()
+  def pbkdf2_sha384(_password, _salt, _iter, _out_size), do: nif_error()
+  def pbkdf2_sha512(_password, _salt, _iter, _out_size), do: nif_error()
 
   defp nif_error, do: :erlang.nif_error(:nif_not_loaded)
 end

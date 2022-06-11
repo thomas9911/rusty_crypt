@@ -15,6 +15,21 @@ defmodule RustyCrypt.ErlangTest do
       apply(module_two, method, args)
       flunk("assert_same_exception: This should never be reached")
     rescue
+      e in ErlangError ->
+        case {e, exception} do
+          {%ErlangError{
+            original: {erlang_error, {file, _}, message},
+            reason: reason
+          },  %ErlangError{
+            original: {erlang_error2, {file2, _}, message2},
+            reason: reason2
+          } } ->
+            assert {erlang_error, file, message, reason} == {erlang_error2, file2, message2, reason2}
+
+          {e, exception} ->
+            assert e == exception
+        end
+
       e ->
         assert e == exception
     end
@@ -25,6 +40,10 @@ defmodule RustyCrypt.ErlangTest do
   end
 
   describe "hash" do
+    test "sha" do
+      assert_same(:crypto, RustyCrypt.Erlang, :hash, [:sha, <<0::64>>])
+    end
+
     test "sha224" do
       assert_same(:crypto, RustyCrypt.Erlang, :hash, [:sha224, <<0::64>>])
     end
@@ -90,6 +109,10 @@ defmodule RustyCrypt.ErlangTest do
       key = Bytes.secure_random(15)
 
       assert_same_exception(:crypto, RustyCrypt.Erlang, :mac, [:poly1305, key, data])
+    end
+
+    test "hmac sha1", %{key: key, data: data} do
+      assert_same(:crypto, RustyCrypt.Erlang, :mac, [:hmac, :sha, key, data])
     end
 
     test "hmac sha224", %{key: key, data: data} do
